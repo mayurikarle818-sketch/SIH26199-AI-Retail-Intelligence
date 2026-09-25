@@ -1,0 +1,16 @@
+bom_id,product_id,material_id,material_name,quantity_required,unit
+BOM001,PR001,RM001,Steel Sheet,2,kg
+BOM002,PR001,RM002,Aluminium Sheet,1,kg
+BOM003,PR002,RM003,Copper Wire,0.5,kg
+BOM004,PR002,RM004,Plastic Granules,1.5,kg
+BOM005,PR003,RM005,Rubber Material,0.8,kg
+BOM006,PR003,RM006,Glass Sheet,2,piece
+BOM007,PR004,RM007,Cardboard,1,kg
+BOM008,PR004,RM008,Adhesive,0.2,liter
+BOM009,PR005,RM009,Electronic Chip,4,piece
+BOM010,PR005,RM010,Packaging Box,1,piece
+BOM011,PR006,RM001,Steel Sheet,1.5,kg
+BOM012,PR007,RM002,Aluminium Sheet,2,kg
+BOM013,PR008,RM003,Copper Wire,0.7,kg
+BOM014,PR009,RM004,Plastic Granules,2,kg
+BOM015,PR010,RM007,Cardboard,1.2,kg

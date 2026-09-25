@@ -1,0 +1,21 @@
+date,product_category,trend_index,trend_direction,source
+2016-04-10,FOODS,42,Stable,Online Search
+2016-04-11,FOODS,45,Rising,Online Search
+2016-04-12,FOODS,47,Rising,Online Search
+2016-04-13,FOODS,50,Rising,Online Search
+2016-04-14,FOODS,54,Rising,Online Search
+2016-04-15,FOODS,58,Rising,Online Search
+2016-04-16,FOODS,63,Rising,Online Search
+2016-04-17,FOODS,68,Rising,Online Search
+2016-04-18,FOODS,61,Falling,Online Search
+2016-04-19,FOODS,64,Rising,Online Search
+2016-04-20,FOODS,69,Rising,Online Search
+2016-04-21,FOODS,73,Rising,Online Search
+2016-04-22,FOODS,78,Rising,Online Search
+2016-04-23,FOODS,84,Rising,Online Search
+2016-04-24,FOODS,81,Falling,Online Search
+2026-09-10,FOODS,68,Rising,Online Search
+2026-09-11,FOODS,72,Rising,Online Search
+2026-09-12,FOODS,76,Rising,Online Search
+2026-09-13,FOODS,80,Rising,Online Search
+2026-09-14,FOODS,84,Rising,Online Search

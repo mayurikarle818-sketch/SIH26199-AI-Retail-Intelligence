@@ -1,0 +1,11 @@
+preference_id,customer_id,product_id,preferred_category,preferred_price_range,purchase_frequency,preferred_store
+CP001,CUST001,PR001,Storage,2000-3000,Monthly,ST001
+CP002,CUST002,PR002,Electrical,500-1000,Weekly,ST002
+CP003,CUST003,PR003,Safety,500-1000,Monthly,ST003
+CP004,CUST004,PR004,Display,1500-2000,Quarterly,ST004
+CP005,CUST005,PR005,Electronics,1000-1500,Monthly,ST005
+CP006,CUST006,PR006,Tools,500-1000,Monthly,ST006
+CP007,CUST007,PR007,Furniture,2000-3000,Quarterly,ST007
+CP008,CUST008,PR008,Electrical,1000-2000,Weekly,ST008
+CP009,CUST009,PR009,Storage,300-600,Monthly,ST009
+CP010,CUST010,PR010,Packaging,50-100,Weekly,ST010s

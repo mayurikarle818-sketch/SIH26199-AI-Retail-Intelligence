@@ -1,0 +1,11 @@
+production_status_id,production_order_id,product_id,production_start_date,production_end_date,planned_quantity,produced_quantity,rejected_quantity,status
+PS001,PO001,PR001,2026-09-01,2026-09-03,500,480,10,Completed
+PS002,PO002,PR002,2026-09-02,2026-09-04,300,295,5,Completed
+PS003,PO003,PR003,2026-09-03,2026-09-06,700,680,15,Completed
+PS004,PO004,PR004,2026-09-04,2026-09-07,450,420,12,Completed
+PS005,PO005,PR005,2026-09-05,2026-09-08,600,570,8,Completed
+PS006,PO006,PR006,2026-09-06,2026-09-09,350,330,7,Completed
+PS007,PO007,PR007,2026-09-07,\N,\N,0,0,Pending
+PS008,PO008,PR008,2026-09-08,2026-09-10,400,390,6,In Progress
+PS009,PO009,PR009,2026-09-09,2026-09-11,550,525,9,In Progress
+PS010,PO010,PR010,2026-09-10,\N,\N,0,0,Pending

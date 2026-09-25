@@ -1,0 +1,11 @@
+item_id,store_id,current_stock,incoming_stock,lead_time_days,source
+FOODS_2_197,CA_1,30,0,2,MVP Inventory Snapshot
+FOODS_3_080,CA_1,28,0,2,MVP Inventory Snapshot
+FOODS_3_090,CA_1,82,0,2,MVP Inventory Snapshot
+FOODS_3_120,CA_1,64,0,2,MVP Inventory Snapshot
+FOODS_3_252,CA_1,56,0,2,MVP Inventory Snapshot
+FOODS_3_555,CA_1,27,0,2,MVP Inventory Snapshot
+FOODS_3_586,CA_1,57,0,2,MVP Inventory Snapshot
+FOODS_3_587,CA_1,26,0,2,MVP Inventory Snapshot
+FOODS_3_714,CA_1,24,0,2,MVP Inventory Snapshot
+FOODS_3_808,CA_1,0,0,2,MVP Inventory Snapshot

@@ -1,0 +1,2676 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Retail Intelligence - Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- =====================================================
+         RETAILER-ONLY ACCESS PROTECTION
+    ====================================================== -->
+    <script>
+        (function () {
+
+            const loggedIn =
+                localStorage.getItem("loggedIn");
+
+            const role =
+                localStorage.getItem("userRole");
+
+            /*
+             * Only logged-in Retailer can access
+             * the Retailer Dashboard.
+             *
+             * Factory / Customer / logged-out users
+             * are redirected to Login.
+             */
+
+            if (
+                loggedIn !== "true" ||
+                role !== "retailer"
+            ) {
+                window.location.href = "index.html";
+            }
+
+        })();
+    </script>
+
+</head>
+
+<body>
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            AI
+        </div>
+
+        <div>
+            <h2>Retail AI</h2>
+            <span>Intelligence Platform</span>
+        </div>
+
+    </div>
+
+    <nav>
+
+        <a href="dashboard.html" class="active">
+            Dashboard
+        </a>
+
+        <a href="products.html">
+            Products
+        </a>
+
+        <a href="sales.html">
+            Sales Analysis
+        </a>
+
+        <a href="prediction.html">
+            AI Prediction
+        </a>
+
+        <a href="inventory-risk.html">
+            Inventory Risk
+        </a>
+
+        <a href="recommendations.html">
+            Recommendations
+        </a>
+
+        <a href="orders.html">
+            Orders
+        </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+
+        <button
+            onclick="logout()"
+            class="logout-btn">
+
+            Logout
+
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<main class="main-content">
+
+    <header class="topbar">
+
+        <div>
+
+            <h1>
+                Retail Intelligence Dashboard
+            </h1>
+
+            <p>
+                AI-powered demand forecasting
+                and inventory intelligence
+            </p>
+
+        </div>
+
+        <div class="user-section">
+
+            <div class="status-dot"></div>
+
+            <span>
+                AI Engine Online
+            </span>
+
+        </div>
+
+    </header>
+
+
+    <!-- =================================================
+         LOADING
+    ================================================= -->
+
+    <div id="loading"
+         class="ai-loading">
+
+        <div class="loader"></div>
+
+        <span>
+            Loading AI recommendation...
+        </span>
+
+    </div>
+
+
+    <!-- =================================================
+         ERROR
+    ================================================= -->
+
+    <div id="apiError"
+         class="api-error"
+         style="display:none;">
+
+        <strong>
+            Backend Connection Error
+        </strong>
+
+        <p>
+            Unable to connect to AI backend.
+            Please make sure the backend server is running
+            on port 8003.
+        </p>
+
+    </div>
+
+
+    <!-- =================================================
+         KPI CARDS
+    ================================================= -->
+
+    <section class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-icon purple"></div>
+
+            <div>
+
+                <p>
+                    Predicted Demand
+                </p>
+
+                <h2 id="predictedDemand">
+                    --
+                </h2>
+
+                <span>
+                    units / day
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon blue"></div>
+
+            <div>
+
+                <p>
+                    Current Stock
+                </p>
+
+                <h2 id="currentStock">
+                    --
+                </h2>
+
+                <span>
+                    units available
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon red"></div>
+
+            <div>
+
+                <p>
+                    Inventory Risk
+                </p>
+
+                <h2 id="riskLevel">
+                    --
+                </h2>
+
+                <span id="stockCover">
+                    Stock cover: --
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon green"></div>
+
+            <div>
+
+                <p>
+                    Recommended Order
+                </p>
+
+                <h2 id="recommendedOrder">
+                    --
+                </h2>
+
+                <span>
+                    units
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         AI INSIGHT
+    ================================================= -->
+
+    <section class="ai-insight">
+
+        <div class="insight-icon"></div>
+
+        <div class="insight-content">
+
+            <span class="insight-label">
+                AI INSIGHT
+            </span>
+
+            <h2 id="aiRecommendation">
+                Analyzing inventory...
+            </h2>
+
+            <p id="aiExplanation">
+                AI is analyzing sales,
+                inventory and demand signals.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         SMART ALERTS
+    ================================================= -->
+
+    <section class="dashboard-card alerts-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Smart Alerts
+                </h2>
+
+                <p>
+                    AI-powered inventory and market signals
+                </p>
+
+            </div>
+
+            <span id="alertCount"
+                  class="alert-count">
+
+                0 Alerts
+
+            </span>
+
+        </div>
+
+
+        <div id="alertsContainer"
+             class="alerts-container">
+
+            <div class="loading-alerts">
+                Loading AI alerts...
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         MULTI PRODUCT INVENTORY
+    ================================================= -->
+
+    <section class="dashboard-card multi-product-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Multi-Product Inventory Overview
+                </h2>
+
+                <p>
+                    AI demand prediction and inventory recommendations
+                </p>
+
+            </div>
+
+            <span class="live-badge">
+                LIVE
+            </span>
+
+        </div>
+
+
+        <div class="multi-product-summary">
+
+            <div class="mini-stat">
+
+                <span>
+                    Total Products
+                </span>
+
+                <strong id="multiTotalProducts">
+                    --
+                </strong>
+
+            </div>
+
+
+            <div class="mini-stat">
+
+                <span>
+                    High Risk
+                </span>
+
+                <strong id="multiHighRisk">
+                    --
+                </strong>
+
+            </div>
+
+
+            <div class="mini-stat">
+
+                <span>
+                    Critical
+                </span>
+
+                <strong id="multiCriticalRisk">
+                    --
+                </strong>
+
+            </div>
+
+
+            <div class="mini-stat">
+
+                <span>
+                    Total Reorder
+                </span>
+
+                <strong id="multiReorderUnits">
+                    --
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table class="multi-product-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Product</th>
+                        <th>Predicted Demand</th>
+                        <th>Current Stock</th>
+                        <th>Stock Cover</th>
+                        <th>Risk</th>
+                        <th>Recommended Order</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="multiProductTableBody">
+
+                    <tr>
+
+                        <td colspan="7">
+                            Loading multi-product AI data...
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         TWO COLUMN SECTION
+    ================================================= -->
+
+    <section class="dashboard-grid">
+
+        <!-- INVENTORY INTELLIGENCE -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>
+                        Inventory Intelligence
+                    </h2>
+
+                    <p>
+                        AI-powered stock analysis
+                    </p>
+
+                </div>
+
+                <span class="live-badge">
+                    LIVE
+                </span>
+
+            </div>
+
+
+            <div class="inventory-details">
+
+                <div class="detail-row">
+                    <span>Product</span>
+                    <strong id="productName">--</strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Store</span>
+                    <strong id="storeName">--</strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Available Stock</span>
+                    <strong id="availableStock">--</strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Lead Time</span>
+                    <strong id="leadTime">--</strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Safety Stock</span>
+                    <strong id="safetyStock">--</strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Reorder Point</span>
+                    <strong id="reorderPoint">--</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CONTEXT INTELLIGENCE -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>
+                        Context Intelligence
+                    </h2>
+
+                    <p>
+                        External demand signals
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="context-list">
+
+                <div class="context-item">
+                    <div class="context-icon"></div>
+                    <div>
+                        <span>Festival</span>
+                        <strong id="festival">Loading...</strong>
+                    </div>
+                </div>
+
+
+                <div class="context-item">
+                    <div class="context-icon"></div>
+                    <div>
+                        <span>Festival Impact</span>
+                        <strong id="festivalImpact">Loading...</strong>
+                    </div>
+                </div>
+
+
+                <div class="context-item">
+                    <div class="context-icon"></div>
+                    <div>
+                        <span>Temperature</span>
+                        <strong id="temperature">Loading...</strong>
+                    </div>
+                </div>
+
+
+                <div class="context-item">
+                    <div class="context-icon"></div>
+                    <div>
+                        <span>Rain</span>
+                        <strong id="rain">Loading...</strong>
+                    </div>
+                </div>
+
+
+                <div class="context-item">
+                    <div class="context-icon"></div>
+                    <div>
+                        <span>Promotion</span>
+                        <strong id="promotion">Loading...</strong>
+                    </div>
+                </div>
+
+
+                <div class="context-item">
+                    <div class="context-icon"></div>
+                    <div>
+                        <span>Online Trend</span>
+                        <strong id="onlineTrend">Loading...</strong>
+                    </div>
+                </div>
+
+
+                <div class="context-item">
+                    <div class="context-icon"></div>
+                    <div>
+                        <span>Trend Score</span>
+                        <strong id="trendIndex">Loading...</strong>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         AI REASONING
+    ================================================= -->
+
+    <section class="dashboard-card reasoning-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Why AI Recommends This
+                </h2>
+
+                <p>
+                    Explainable AI decision
+                </p>
+
+            </div>
+
+            <span class="ai-badge">
+                AI
+            </span>
+
+        </div>
+
+
+        <div id="contextSignals"
+             class="signals-list">
+
+            <div class="signal-item">
+                Analyzing AI signals...
+            </div>
+
+        </div>
+
+
+        <div class="recommendation-action">
+
+            <div>
+
+                <span>
+                    Recommended Action
+                </span>
+
+                <h2 id="recommendationAction">
+                    --
+                </h2>
+
+            </div>
+
+
+            <button
+                id="takeActionBtn"
+                class="action-btn"
+                onclick="takeAction()">
+
+                PLACE PURCHASE ORDER
+
+            </button>
+
+        </div>
+
+
+        <!-- FEEDBACK -->
+
+        <div class="feedback-section">
+
+            <div class="feedback-title">
+
+                <span>
+                    Was this AI recommendation helpful?
+                </span>
+
+            </div>
+
+
+            <div class="feedback-buttons">
+
+                <button
+                    class="feedback-btn helpful"
+                    onclick="submitFeedback('helpful')">
+
+                    Helpful
+
+                </button>
+
+
+                <button
+                    class="feedback-btn not-helpful"
+                    onclick="submitFeedback('not_helpful')">
+
+                    Not Helpful
+
+                </button>
+
+            </div>
+
+
+            <p id="feedbackMessage"
+               class="feedback-message">
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         AI RETAIL ASSISTANT
+    ================================================= -->
+
+    <section class="dashboard-card assistant-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    AI Retail Assistant
+                </h2>
+
+                <p>
+                    Ask questions about demand,
+                    inventory, trends and recommendations
+                </p>
+
+            </div>
+
+            <span class="ai-badge">
+                AI
+            </span>
+
+        </div>
+
+
+        <div id="assistantChat"
+             class="assistant-chat">
+
+            <div class="assistant-message">
+
+                <strong>
+                    AI Assistant
+                </strong>
+
+                <p>
+                    Hello! Ask me about stock,
+                    demand, inventory risk,
+                    festivals, weather,
+                    online trends or recommendations.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="assistant-input-area">
+
+            <input
+                type="text"
+                id="assistantQuestion"
+                placeholder="e.g. What should I stock?"
+                onkeypress="handleAssistantKey(event)"
+            >
+
+            <button
+                class="action-btn"
+                onclick="askAssistant()">
+
+                Ask AI
+
+            </button>
+
+        </div>
+
+
+        <div id="assistantStatus"
+             class="feedback-message">
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            AI Retail Intelligence Platform
+        </p>
+
+        <span>
+            AI-powered decision support
+        </span>
+
+    </footer>
+
+</main>
+
+
+<script src="script.js"></script>
+
+
+<script>
+
+/* =========================================================
+   API CONFIGURATION
+========================================================= */
+
+const API_BASE = "http://127.0.0.1:8003/api";
+
+const API_URL = `${API_BASE}/recommendation`;
+const ALERTS_API = `${API_BASE}/alerts`;
+const FEEDBACK_API = `${API_BASE}/feedback`;
+const ASSISTANT_API = `${API_BASE}/assistant`;
+const INVENTORY_API = `${API_BASE}/inventory-risk`;
+
+let recommendationData = null;
+
+
+/* =========================================================
+   SAFE VALUE
+========================================================= */
+
+function safeValue(value, fallback = "--") {
+
+    if (
+        value === undefined ||
+        value === null ||
+        value === ""
+    ) {
+        return fallback;
+    }
+
+    return value;
+}
+
+
+/* =========================================================
+   NUMBER VALUE
+========================================================= */
+
+function numberValue(value, fallback = 0) {
+
+    const number = Number(value);
+
+    return Number.isFinite(number)
+        ? number
+        : fallback;
+}
+
+
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+/* =========================================================
+   LOAD RECOMMENDATION
+========================================================= */
+
+async function loadRecommendation() {
+
+    const loading =
+        document.getElementById("loading");
+
+    const errorBox =
+        document.getElementById("apiError");
+
+    try {
+
+        loading.style.display = "flex";
+        errorBox.style.display = "none";
+
+        const response =
+            await fetch(
+                API_URL,
+                {
+                    cache: "no-store"
+                }
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Recommendation API failed: ${response.status}`
+            );
+
+        }
+
+        const data =
+            await response.json();
+
+        console.log(
+            "REAL AI RECOMMENDATION:",
+            data
+        );
+
+        recommendationData = data;
+
+        updateDashboard(data);
+
+        loading.style.display = "none";
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Recommendation Error:",
+            error
+        );
+
+        loading.style.display = "none";
+
+        errorBox.style.display = "block";
+
+        document.getElementById(
+            "aiRecommendation"
+        ).textContent =
+            "AI data unavailable";
+
+        document.getElementById(
+            "aiExplanation"
+        ).textContent =
+            "Unable to load AI recommendation from backend.";
+
+        document.getElementById(
+            "takeActionBtn"
+        ).disabled = true;
+
+    }
+
+}
+
+
+/* =========================================================
+   UPDATE DASHBOARD
+========================================================= */
+
+function updateDashboard(data) {
+
+    const predictedDemand =
+        numberValue(
+            data.predicted_demand ??
+            data.predicted_daily_demand,
+            0
+        );
+
+    const currentStock =
+        numberValue(
+            data.current_stock ??
+            data.available_stock,
+            0
+        );
+
+    const recommendedOrder =
+        numberValue(
+            data.recommended_order,
+            0
+        );
+
+    const stockCover =
+        numberValue(
+            data.stock_cover_days,
+            predictedDemand > 0
+                ? currentStock / predictedDemand
+                : 0
+        );
+
+
+    /* KPI */
+
+    document.getElementById(
+        "predictedDemand"
+    ).textContent =
+        predictedDemand.toFixed(1);
+
+
+    document.getElementById(
+        "currentStock"
+    ).textContent =
+        currentStock;
+
+
+    const risk =
+        String(
+            data.risk || "LOW"
+        ).toUpperCase();
+
+    const riskElement =
+        document.getElementById("riskLevel");
+
+    riskElement.textContent = risk;
+
+    riskElement.className = "";
+
+    if (risk === "CRITICAL") {
+
+        riskElement.classList.add(
+            "risk-critical"
+        );
+
+    }
+
+    else if (risk === "HIGH") {
+
+        riskElement.classList.add(
+            "risk-high"
+        );
+
+    }
+
+    else if (risk === "MEDIUM") {
+
+        riskElement.classList.add(
+            "risk-medium"
+        );
+
+    }
+
+    else {
+
+        riskElement.classList.add(
+            "risk-low"
+        );
+
+    }
+
+
+    document.getElementById(
+        "recommendedOrder"
+    ).textContent =
+        recommendedOrder;
+
+
+    document.getElementById(
+        "stockCover"
+    ).textContent =
+        `Stock cover: ${stockCover.toFixed(1)} days`;
+
+
+    /* =====================================================
+       INVENTORY DETAILS
+    ===================================================== */
+
+    document.getElementById(
+        "productName"
+    ).textContent =
+        safeValue(
+            data.product,
+            "FOODS_3_090"
+        );
+
+
+    document.getElementById(
+        "storeName"
+    ).textContent =
+        safeValue(
+            data.store,
+            "CA_1"
+        );
+
+
+    document.getElementById(
+        "availableStock"
+    ).textContent =
+        currentStock;
+
+
+    document.getElementById(
+        "leadTime"
+    ).textContent =
+        `${safeValue(
+            data.lead_time_days,
+            2
+        )} days`;
+
+
+    document.getElementById(
+        "safetyStock"
+    ).textContent =
+        safeValue(
+            data.safety_stock,
+            0
+        );
+
+
+    document.getElementById(
+        "reorderPoint"
+    ).textContent =
+        safeValue(
+            data.reorder_point,
+            0
+        );
+
+
+    /* =====================================================
+       AI RECOMMENDATION
+    ===================================================== */
+
+    let recommendation =
+        String(
+            data.recommendation || ""
+        ).trim();
+
+
+    if (!recommendation) {
+
+        if (recommendedOrder > 0) {
+
+            recommendation =
+                `Place purchase order for ${recommendedOrder} units`;
+
+        }
+
+        else {
+
+            recommendation =
+                "Monitor inventory";
+
+        }
+
+    }
+
+
+    document.getElementById(
+        "aiRecommendation"
+    ).textContent =
+        recommendation;
+
+
+    /* =====================================================
+       AI EXPLANATION
+    ===================================================== */
+
+    let explanation =
+        String(
+            data.explanation || ""
+        ).trim();
+
+
+    if (!explanation) {
+
+        explanation =
+            `XGBoost predicts approximately ${predictedDemand.toFixed(1)} units/day demand. ` +
+            `Available stock is ${currentStock} units. ` +
+            `Reorder point is ${safeValue(data.reorder_point, 0)} units. ` +
+            `The AI recommends ${recommendedOrder} units.`;
+
+    }
+
+
+    document.getElementById(
+        "aiExplanation"
+    ).textContent =
+        explanation;
+
+
+    /* =====================================================
+       ACTION
+    ===================================================== */
+
+    const actionElement =
+        document.getElementById(
+            "recommendationAction"
+        );
+
+    const actionButton =
+        document.getElementById(
+            "takeActionBtn"
+        );
+
+
+    if (recommendedOrder > 0) {
+
+        actionElement.textContent =
+            "PLACE PURCHASE ORDER";
+
+        actionButton.textContent =
+            "PLACE PURCHASE ORDER";
+
+        actionButton.disabled = false;
+
+    }
+
+    else {
+
+        actionElement.textContent =
+            "MONITOR INVENTORY";
+
+        actionButton.textContent =
+            "MONITOR INVENTORY";
+
+        actionButton.disabled = true;
+
+    }
+
+
+    updateContextIntelligence(data);
+
+    updateContextSignals(data);
+
+}
+
+
+/* =========================================================
+   REAL CONTEXT INTELLIGENCE
+========================================================= */
+
+function updateContextIntelligence(data) {
+
+    document.getElementById(
+        "festival"
+    ).textContent =
+        safeValue(
+            data.festival,
+            "No festival in source data"
+        );
+
+
+    document.getElementById(
+        "festivalImpact"
+    ).textContent =
+        safeValue(
+            data.festival_impact,
+            "Low"
+        );
+
+
+    const temperature =
+        data.temperature;
+
+    document.getElementById(
+        "temperature"
+    ).textContent =
+        temperature !== undefined &&
+        temperature !== null
+            ? `${temperature} °C`
+            : "--";
+
+
+    const rain =
+        numberValue(
+            data.rain,
+            0
+        );
+
+    document.getElementById(
+        "rain"
+    ).textContent =
+        rain > 0
+            ? `${rain} mm`
+            : "No";
+
+
+    document.getElementById(
+        "promotion"
+    ).textContent =
+        safeValue(
+            data.promotion,
+            "No Promotion"
+        );
+
+
+    document.getElementById(
+        "onlineTrend"
+    ).textContent =
+        safeValue(
+            data.online_trend,
+            "Stable"
+        );
+
+
+    const trendIndex =
+        data.trend_index;
+
+    document.getElementById(
+        "trendIndex"
+    ).textContent =
+        trendIndex !== undefined &&
+        trendIndex !== null
+            ? `${trendIndex}/100`
+            : "--";
+
+}
+
+
+/* =========================================================
+   EXPLAINABLE AI SIGNALS
+========================================================= */
+
+function updateContextSignals(data) {
+
+    const signals =
+        document.getElementById(
+            "contextSignals"
+        );
+
+    signals.innerHTML = "";
+
+
+    if (
+        Array.isArray(
+            data.explainable_factors
+        ) &&
+        data.explainable_factors.length > 0
+    ) {
+
+        data.explainable_factors.forEach(
+            signal => {
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+                div.className =
+                    "signal-item";
+
+                div.textContent =
+                    typeof signal === "string"
+                        ? signal
+                        : JSON.stringify(signal);
+
+                signals.appendChild(
+                    div
+                );
+
+            }
+        );
+
+        return;
+    }
+
+
+    if (
+        Array.isArray(
+            data.context_signals
+        ) &&
+        data.context_signals.length > 0
+    ) {
+
+        data.context_signals.forEach(
+            signal => {
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+                div.className =
+                    "signal-item";
+
+                div.textContent =
+                    signal;
+
+                signals.appendChild(
+                    div
+                );
+
+            }
+        );
+
+        return;
+    }
+
+
+    const predicted =
+        numberValue(
+            data.predicted_demand ??
+            data.predicted_daily_demand
+        );
+
+
+    const stock =
+        numberValue(
+            data.available_stock ??
+            data.current_stock
+        );
+
+
+    const reorderPoint =
+        numberValue(
+            data.reorder_point
+        );
+
+
+    const recommended =
+        numberValue(
+            data.recommended_order
+        );
+
+
+    const trend =
+        safeValue(
+            data.online_trend,
+            "Stable"
+        );
+
+
+    const promotion =
+        safeValue(
+            data.promotion,
+            "No Promotion"
+        );
+
+
+    const signalsList = [
+
+        `XGBoost predicted demand: ${predicted.toFixed(1)} units/day`,
+
+        `Available inventory: ${stock} units`,
+
+        `Reorder point: ${reorderPoint} units`,
+
+        `Recommended purchase quantity: ${recommended} units`,
+
+        `Online trend: ${trend}`,
+
+        `Promotion: ${promotion}`
+
+    ];
+
+
+    signalsList.forEach(
+        signal => {
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+            div.className =
+                "signal-item";
+
+            div.textContent =
+                signal;
+
+            signals.appendChild(
+                div
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SMART ALERTS
+========================================================= */
+
+async function loadAlerts() {
+
+    const container =
+        document.getElementById(
+            "alertsContainer"
+        );
+
+    const count =
+        document.getElementById(
+            "alertCount"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                ALERTS_API,
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Alerts API failed"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const alerts =
+            Array.isArray(
+                data.alerts
+            )
+                ? data.alerts
+                : [];
+
+
+        count.textContent =
+            `${alerts.length} Alerts`;
+
+
+        container.innerHTML = "";
+
+
+        if (alerts.length === 0) {
+
+            container.innerHTML = `
+                <div class="loading-alerts">
+                    No active alerts
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        alerts.forEach(
+            alert => {
+
+                const alertCard =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                const type =
+                    String(
+                        alert.type || "LOW"
+                    ).toLowerCase();
+
+
+                alertCard.className =
+                    `alert-item alert-${type}`;
+
+
+                const title =
+                    safeValue(
+                        alert.title,
+                        "Inventory Alert"
+                    );
+
+
+                const message =
+                    safeValue(
+                        alert.message,
+                        "AI detected an inventory signal."
+                    );
+
+
+                const action =
+                    safeValue(
+                        alert.action,
+                        "Review inventory"
+                    );
+
+
+                const product =
+                    safeValue(
+                        alert.product,
+                        ""
+                    );
+
+
+                alertCard.innerHTML = `
+
+                    <div class="alert-icon">
+                        ${getAlertIcon(alert.type)}
+                    </div>
+
+                    <div class="alert-content">
+
+                        <h3>
+                            ${escapeHTML(title)}
+                        </h3>
+
+                        <p>
+                            ${escapeHTML(message)}
+                        </p>
+
+                        <button
+                            class="alert-action alert-action-btn"
+                            onclick="handleAlertAction(
+                                '${escapeHTML(alert.type || "")}',
+                                '${escapeHTML(product)}'
+                            )">
+
+                            ${escapeHTML(action)}
+
+                        </button>
+
+                    </div>
+
+                `;
+
+
+                container.appendChild(
+                    alertCard
+                );
+
+            }
+        );
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Alert Error:",
+            error
+        );
+
+
+        count.textContent =
+            "0 Alerts";
+
+
+        container.innerHTML = `
+
+            <div class="loading-alerts">
+
+                Unable to load AI alerts.
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   ALERT ACTION
+========================================================= */
+
+function handleAlertAction(
+    type,
+    product
+) {
+
+    const t =
+        String(type || "")
+            .toUpperCase();
+
+
+    if (
+        t === "ORDER" &&
+        product
+    ) {
+
+        window.location.href =
+            `orders.html?product=${encodeURIComponent(product)}`;
+
+        return;
+
+    }
+
+
+    if (product) {
+
+        window.location.href =
+            `recommendations.html?product=${encodeURIComponent(product)}`;
+
+        return;
+
+    }
+
+
+    window.location.href =
+        "inventory-risk.html";
+
+}
+
+
+/* =========================================================
+   ALERT ICON
+========================================================= */
+
+function getAlertIcon(type) {
+
+    const icons = {
+
+        CRITICAL: "!",
+        HIGH: "!",
+        MEDIUM: "!",
+        LOW: "i",
+        FESTIVAL: "F",
+        WEATHER: "W",
+        PROMOTION: "P",
+        TREND: "T"
+
+    };
+
+
+    return (
+        icons[
+            String(type || "")
+                .toUpperCase()
+        ] || "i"
+    );
+
+}
+
+
+/* =========================================================
+   MULTI PRODUCT INVENTORY
+========================================================= */
+
+async function loadMultiProducts() {
+
+    const tableBody =
+        document.getElementById(
+            "multiProductTableBody"
+        );
+
+
+    try {
+
+        tableBody.innerHTML = `
+
+            <tr>
+
+                <td colspan="7">
+                    Loading multi-product AI data...
+                </td>
+
+            </tr>
+
+        `;
+
+
+        const response =
+            await fetch(
+                INVENTORY_API,
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Inventory AI API failed: ${response.status}`
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "MULTI PRODUCT AI:",
+            data
+        );
+
+
+        const products =
+            Array.isArray(
+                data.inventory
+            )
+                ? data.inventory
+                : [];
+
+
+        document.getElementById(
+            "multiTotalProducts"
+        ).textContent =
+            products.length;
+
+
+        document.getElementById(
+            "multiHighRisk"
+        ).textContent =
+
+            products.filter(
+                p =>
+                    ["HIGH", "CRITICAL"].includes(
+                        String(
+                            p.risk || ""
+                        ).toUpperCase()
+                    )
+            ).length;
+
+
+        document.getElementById(
+            "multiCriticalRisk"
+        ).textContent =
+
+            products.filter(
+                p =>
+                    String(
+                        p.risk || ""
+                    ).toUpperCase() === "CRITICAL"
+            ).length;
+
+
+        document.getElementById(
+            "multiReorderUnits"
+        ).textContent =
+
+            products.reduce(
+                (
+                    total,
+                    p
+                ) =>
+
+                    total +
+                    numberValue(
+                        p.recommended_order
+                    ),
+
+                0
+            );
+
+
+        if (products.length === 0) {
+
+            tableBody.innerHTML = `
+
+                <tr>
+
+                    <td colspan="7">
+                        No inventory AI records available.
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        tableBody.innerHTML =
+
+            products.map(
+                p => {
+
+                    const risk =
+                        String(
+                            p.risk || "LOW"
+                        ).toUpperCase();
+
+
+                    const predictedDemand =
+                        numberValue(
+                            p.predicted_daily_demand ??
+                            p.predicted_demand
+                        );
+
+
+                    const stock =
+                        numberValue(
+                            p.current_stock ??
+                            p.available_stock
+                        );
+
+
+                    const stockCover =
+                        numberValue(
+                            p.stock_cover_days,
+                            predictedDemand > 0
+                                ? stock / predictedDemand
+                                : 0
+                        );
+
+
+                    const reorder =
+                        numberValue(
+                            p.recommended_order
+                        );
+
+
+                    let action;
+
+
+                    if (reorder > 0) {
+
+                        action = `
+
+                            <button
+                                class="primary-btn small-btn"
+                                onclick="openProductOrder(
+                                    '${escapeHTML(p.product || "")}',
+                                    '${escapeHTML(p.store || "CA_1")}'
+                                )">
+
+                                Place Order
+
+                            </button>
+
+                        `;
+
+                    }
+
+                    else {
+
+                        action = `
+
+                            <span class="status-ok">
+                                Monitor
+                            </span>
+
+                        `;
+
+                    }
+
+
+                    return `
+
+                        <tr>
+
+                            <td>
+
+                                <strong>
+                                    ${escapeHTML(
+                                        p.product || "--"
+                                    )}
+                                </strong>
+
+                                <br>
+
+                                <small>
+                                    ${escapeHTML(
+                                        p.store || "--"
+                                    )}
+                                </small>
+
+                            </td>
+
+
+                            <td>
+                                ${predictedDemand.toFixed(1)}
+                                units/day
+                            </td>
+
+
+                            <td>
+                                ${stock}
+                                units
+                            </td>
+
+
+                            <td>
+                                ${stockCover.toFixed(1)}
+                                days
+                            </td>
+
+
+                            <td>
+
+                                <span
+                                    class="risk-badge ${risk.toLowerCase()}">
+
+                                    ${risk}
+
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <strong>
+                                    ${reorder}
+                                    units
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+                                ${action}
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                }
+            ).join("");
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Multi-product Error:",
+            error
+        );
+
+
+        document.getElementById(
+            "multiTotalProducts"
+        ).textContent = "--";
+
+
+        document.getElementById(
+            "multiHighRisk"
+        ).textContent = "--";
+
+
+        document.getElementById(
+            "multiCriticalRisk"
+        ).textContent = "--";
+
+
+        document.getElementById(
+            "multiReorderUnits"
+        ).textContent = "--";
+
+
+        tableBody.innerHTML = `
+
+            <tr>
+
+                <td colspan="7">
+
+                    Unable to load multi-product AI data:
+                    ${escapeHTML(error.message)}
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   OPEN PRODUCT ORDER
+========================================================= */
+
+function openProductOrder(
+    product,
+    store
+) {
+
+    window.location.href =
+        `recommendations.html?product=${encodeURIComponent(product)}&store=${encodeURIComponent(store)}`;
+
+}
+
+
+/* =========================================================
+   TAKE ACTION
+========================================================= */
+
+async function takeAction() {
+
+    if (!recommendationData) {
+
+        alert(
+            "AI recommendation is not loaded yet."
+        );
+
+        return;
+
+    }
+
+
+    const quantity =
+        numberValue(
+            recommendationData.recommended_order
+        );
+
+
+    if (quantity <= 0) {
+
+        alert(
+            "No purchase order is required for this inventory state."
+        );
+
+        return;
+
+    }
+
+
+    const product =
+        recommendationData.product ||
+        "FOODS_3_090";
+
+
+    const store =
+        recommendationData.store ||
+        "CA_1";
+
+
+    const confirmed =
+        confirm(
+            `Create purchase order for ${quantity} units of ${product}?`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE}/purchase-orders`,
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            product:
+                                product,
+
+                            store:
+                                store,
+
+                            quantity:
+                                quantity,
+
+                            retailer:
+                                "Retail Store 1",
+
+                            factory:
+                                "Factory A",
+
+                            priority:
+                                String(
+                                    recommendationData.risk ||
+                                    "HIGH"
+                                ).toUpperCase()
+
+                        })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Unable to create purchase order"
+            );
+
+        }
+
+
+        alert(
+            `Purchase Order ${data.order.order_id} created successfully.`
+        );
+
+
+        window.location.href =
+            "orders.html";
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Purchase Order Error:",
+            error
+        );
+
+
+        alert(
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   FEEDBACK
+========================================================= */
+
+async function submitFeedback(
+    feedbackValue
+) {
+
+    if (!recommendationData) {
+
+        alert(
+            "AI recommendation is not loaded yet."
+        );
+
+        return;
+
+    }
+
+
+    const feedbackMessage =
+        document.getElementById(
+            "feedbackMessage"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                FEEDBACK_API,
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            product:
+                                recommendationData.product,
+
+                            store:
+                                recommendationData.store,
+
+                            feedback:
+                                feedbackValue
+
+                        })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Feedback API failed"
+            );
+
+        }
+
+
+        feedbackMessage.textContent =
+            "Thank you! Your feedback has been saved.";
+
+
+        feedbackMessage.style.display =
+            "block";
+
+
+        feedbackMessage.style.color =
+            "#4ade80";
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Feedback Error:",
+            error
+        );
+
+
+        feedbackMessage.textContent =
+            "Unable to save feedback.";
+
+
+        feedbackMessage.style.display =
+            "block";
+
+
+        feedbackMessage.style.color =
+            "#f87171";
+
+    }
+
+}
+
+
+/* =========================================================
+   AI RETAIL ASSISTANT
+========================================================= */
+
+async function askAssistant() {
+
+    const input =
+        document.getElementById(
+            "assistantQuestion"
+        );
+
+
+    const chat =
+        document.getElementById(
+            "assistantChat"
+        );
+
+
+    const status =
+        document.getElementById(
+            "assistantStatus"
+        );
+
+
+    const question =
+        input.value.trim();
+
+
+    if (!question) {
+
+        status.textContent =
+            "Please enter a question.";
+
+        status.style.display =
+            "block";
+
+        status.style.color =
+            "#f87171";
+
+        return;
+
+    }
+
+
+    const userMessage =
+        document.createElement(
+            "div"
+        );
+
+
+    userMessage.className =
+        "user-message";
+
+
+    const userStrong =
+        document.createElement(
+            "strong"
+        );
+
+
+    userStrong.textContent =
+        "You";
+
+
+    const userText =
+        document.createElement(
+            "p"
+        );
+
+
+    userText.textContent =
+        question;
+
+
+    userMessage.appendChild(
+        userStrong
+    );
+
+
+    userMessage.appendChild(
+        userText
+    );
+
+
+    chat.appendChild(
+        userMessage
+    );
+
+
+    input.value =
+        "";
+
+
+    chat.scrollTop =
+        chat.scrollHeight;
+
+
+    status.textContent =
+        "AI is analyzing your question...";
+
+
+    status.style.display =
+        "block";
+
+
+    status.style.color =
+        "#a9a9b5";
+
+
+    try {
+
+        const response =
+            await fetch(
+                ASSISTANT_API,
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            question:
+                                question
+                        })
+
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Assistant API failed"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const aiMessage =
+            document.createElement(
+                "div"
+            );
+
+
+        aiMessage.className =
+            "assistant-message";
+
+
+        const aiStrong =
+            document.createElement(
+                "strong"
+            );
+
+
+        aiStrong.textContent =
+            "AI Assistant";
+
+
+        const aiText =
+            document.createElement(
+                "p"
+            );
+
+
+        aiText.textContent =
+            safeValue(
+                data.answer,
+                "No answer available."
+            );
+
+
+        aiMessage.appendChild(
+            aiStrong
+        );
+
+
+        aiMessage.appendChild(
+            aiText
+        );
+
+
+        chat.appendChild(
+            aiMessage
+        );
+
+
+        chat.scrollTop =
+            chat.scrollHeight;
+
+
+        status.textContent =
+            "AI response generated";
+
+
+        status.style.color =
+            "#4ade80";
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Assistant Error:",
+            error
+        );
+
+
+        const errorMessage =
+            document.createElement(
+                "div"
+            );
+
+
+        errorMessage.className =
+            "assistant-message";
+
+
+        errorMessage.innerHTML = `
+
+            <strong>
+                AI Assistant
+            </strong>
+
+            <p>
+                Unable to connect to AI Assistant.
+            </p>
+
+        `;
+
+
+        chat.appendChild(
+            errorMessage
+        );
+
+
+        chat.scrollTop =
+            chat.scrollHeight;
+
+
+        status.textContent =
+            "Backend connection failed.";
+
+
+        status.style.color =
+            "#f87171";
+
+    }
+
+}
+
+
+/* =========================================================
+   ENTER KEY
+========================================================= */
+
+function handleAssistantKey(event) {
+
+    if (event.key === "Enter") {
+
+        askAssistant();
+
+    }
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+function logout() {
+
+    localStorage.removeItem(
+        "loggedIn"
+    );
+
+    localStorage.removeItem(
+        "userRole"
+    );
+
+    localStorage.removeItem(
+        "username"
+    );
+
+    window.location.href =
+        "index.html";
+
+}
+
+
+/* =========================================================
+   START DASHBOARD
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        console.log(
+            "RETAILER DASHBOARD JS LOADED"
+        );
+
+        loadRecommendation();
+
+        loadAlerts();
+
+        loadMultiProducts();
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>

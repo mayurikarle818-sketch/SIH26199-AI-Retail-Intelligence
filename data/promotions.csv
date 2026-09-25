@@ -1,0 +1,30 @@
+date,promotion_name,promotion_type,discount_percentage,promotion_flag
+2011-02-14,Valentines Sale,Seasonal,10,1
+2011-03-20,Holi Sale,Festival,15,1
+2011-04-04,Gudi Padwa Offer,Festival,20,1
+2011-08-31,Ganesh Chaturthi Sale,Festival,20,1
+2011-10-06,Dussehra Sale,Festival,15,1
+2011-10-26,Diwali Mega Sale,Festival,25,1
+2011-12-25,Christmas Sale,Festival,15,1
+2012-03-08,Holi Sale,Festival,20,1
+2012-09-19,Ganesh Chaturthi Sale,Festival,20,1
+2012-10-24,Dussehra Sale,Festival,15,1
+2012-11-13,Diwali Mega Sale,Festival,25,1
+2012-12-25,Christmas Sale,Festival,15,1
+2013-03-10,Holi Sale,Festival,20,1
+2013-09-09,Ganesh Chaturthi Sale,Festival,20,1
+2013-10-13,Dussehra Sale,Festival,15,1
+2013-11-03,Diwali Mega Sale,Festival,25,1
+2013-12-25,Christmas Sale,Festival,15,1
+2014-03-17,Holi Sale,Festival,20,1
+2014-08-29,Ganesh Chaturthi Sale,Festival,20,1
+2014-10-03,Dussehra Sale,Festival,15,1
+2014-10-23,Diwali Mega Sale,Festival,25,1
+2014-12-25,Christmas Sale,Festival,15,1
+2015-03-06,Holi Sale,Festival,20,1
+2015-09-17,Ganesh Chaturthi Sale,Festival,20,1
+2015-10-22,Dussehra Sale,Festival,15,1
+2015-11-11,Diwali Mega Sale,Festival,25,1
+2015-12-25,Christmas Sale,Festival,15,1
+2016-03-24,Holi Sale,Festival,20,1
+2016-04-08,Gudi Padwa Offer,Festival,20,1

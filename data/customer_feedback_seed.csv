@@ -1,0 +1,11 @@
+feedback_id,customer_id,product_id,feedback_date,rating,feedback_type,feedback_text
+FB001,CUST001,PR001,2026-09-01,5,Positive,Good product quality
+FB002,CUST002,PR002,2026-09-02,4,Positive,Product works well
+FB003,CUST003,PR003,2026-09-03,5,Positive,Very useful product
+FB004,CUST004,PR004,2026-09-04,3,Neutral,Product is satisfactory
+FB005,CUST005,PR005,2026-09-05,4,Positive,Easy to use
+FB006,CUST006,PR006,2026-09-06,2,Negative,Packaging needs improvement
+FB007,CUST007,PR007,2026-09-07,5,Positive,Good design
+FB008,CUST008,PR008,2026-09-08,4,Positive,Good quality
+FB009,CUST009,PR009,2026-09-09,3,Neutral,Average product
+FB010,CUST010,PR010,2026-09-10,5,Positive,Value for money

@@ -1,0 +1,11 @@
+product_id,product_name,category,subcategory,unit,unit_price,reorder_level,lead_time_days
+PR001,Steel Storage Rack,Storage,Furniture,piece,2500,50,7
+PR002,Electrical Cable Set,Electrical,Cables,piece,850,80,5
+PR003,Rubber Safety Mat,Safety,Flooring,piece,650,60,6
+PR004,Glass Display Panel,Display,Glass,piece,1800,40,8
+PR005,Smart LED Controller,Electronics,Controller,piece,1200,70,5
+PR006,Metal Tool Box,Tools,Storage,piece,950,50,6
+PR007,Aluminium Shelf,Shelf,Furniture,piece,2200,45,7
+PR008,Copper Wire Roll,Electrical,Wiring,roll,1500,100,4
+PR009,Plastic Storage Box,Storage,Container,piece,450,120,3
+PR010,Packaging Carton,Packaging,Box,piece,80,200,2

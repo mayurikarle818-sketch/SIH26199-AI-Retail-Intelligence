@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sales Analysis</title>
+
+<link rel="stylesheet" href="style.css">
+
+<!-- ==========================================
+     RETAILER-ONLY ACCESS
+========================================== -->
+<script>
+(function () {
+
+    const loggedIn = localStorage.getItem("loggedIn");
+    const role = localStorage.getItem("userRole");
+
+    if (loggedIn !== "true" || role !== "retailer") {
+        window.location.href = "index.html";
+    }
+
+})();
+</script>
+
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">AI</div>
+
+        <div>
+            <h2>AI Retail</h2>
+            <span>Intelligence</span>
+        </div>
+
+    </div>
+
+
+    <nav>
+
+        <a href="dashboard.html" class="nav-link">
+            <span>Dashboard</span>
+        </a>
+
+        <a href="products.html" class="nav-link">
+            <span>Products</span>
+        </a>
+
+        <a href="sales.html" class="nav-link active">
+            <span>Sales</span>
+        </a>
+
+        <a href="prediction.html" class="nav-link">
+            <span>Demand Prediction</span>
+        </a>
+
+        <a href="inventory-risk.html" class="nav-link">
+            <span>Inventory Risk</span>
+        </a>
+
+        <a href="recommendations.html" class="nav-link">
+            <span>AI Recommendations</span>
+        </a>
+
+        <a href="orders.html" class="nav-link">
+            <span>Orders</span>
+        </a>
+
+    </nav>
+
+
+    <div class="sidebar-bottom">
+
+        <button onclick="logout()" class="logout-btn">
+            Logout
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="main-content">
+
+<header class="topbar">
+
+    <div>
+
+        <h1>Sales Analysis</h1>
+
+        <p>
+            Analyze real sales data and recent demand trends.
+        </p>
+
+    </div>
+
+</header>
+
+
+<!-- ================= KPI CARDS ================= -->
+
+<section class="stats-grid">
+
+    <div class="stat-card">
+
+        <div class="stat-icon green"></div>
+
+        <div>
+
+            <span>Total Units Sold</span>
+
+            <h2 id="totalUnits">
+                -
+            </h2>
+
+            <small>
+                Last 30 days
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon purple"></div>
+
+        <div>
+
+            <span>Average Daily Sales</span>
+
+            <h2 id="averageSales">
+                -
+            </h2>
+
+            <small>
+                Units / day
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon orange"></div>
+
+        <div>
+
+            <span>Highest Sales Day</span>
+
+            <h2 id="highestSales">
+                -
+            </h2>
+
+            <small id="highestSalesDate">
+                Loading...
+            </small>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= SALES TREND ================= -->
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <h2>Recent Sales Trend</h2>
+
+            <p>
+                Daily units sold over the last 30 days
+            </p>
+
+        </div>
+
+        <span id="salesStatus">
+            Loading...
+        </span>
+
+    </div>
+
+
+    <div class="chart">
+
+        <div
+            class="chart-bars"
+            id="salesChart"
+        >
+
+            <div
+                style="
+                width:100%;
+                text-align:center;
+                padding:40px;
+                color:#888;
+                "
+            >
+
+                Loading sales data...
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= SALES TABLE ================= -->
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <h2>Sales Records</h2>
+
+            <p>
+                Real sales records from the backend
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Date</th>
+
+                    <th>Product</th>
+
+                    <th>Store</th>
+
+                    <th>Units Sold</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="salesTableBody">
+
+                <tr>
+
+                    <td
+                        colspan="4"
+                        style="
+                        text-align:center;
+                        padding:30px;
+                        "
+                    >
+
+                        Loading sales data...
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+</main>
+
+</div>
+
+
+<script src="script.js"></script>
+
+
+<script>
+
+// ==========================================
+// LOGOUT
+// ==========================================
+
+function logout() {
+
+    localStorage.removeItem("loggedIn");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("username");
+
+    window.location.href = "index.html";
+
+}
+
+
+// ==========================================
+// SALES API
+// ==========================================
+
+const SALES_API =
+    "http://127.0.0.1:8003/api/sales";
+
+
+// ==========================================
+// LOAD SALES
+// ==========================================
+
+async function loadSales() {
+
+    const tableBody =
+        document.getElementById(
+            "salesTableBody"
+        );
+
+    try {
+
+        const response =
+            await fetch(SALES_API);
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Sales API failed"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            data.status !== "success" ||
+            !data.sales
+        ) {
+
+            throw new Error(
+                "Invalid sales data"
+            );
+
+        }
+
+
+        const sales =
+            data.sales;
+
+
+        if (sales.length === 0) {
+
+            tableBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="4"
+                        style="
+                        text-align:center;
+                        padding:30px;
+                        "
+                    >
+
+                        No sales data available.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        // Update dashboard statistics
+
+        updateSalesStats(sales);
+
+
+        // Create table
+
+        displaySalesTable(sales);
+
+
+        // Create chart
+
+        createSalesChart(sales);
+
+
+        document.getElementById(
+            "salesStatus"
+        ).textContent =
+            `${sales.length} records`;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Sales API Error:",
+            error
+        );
+
+
+        tableBody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="4"
+                    style="
+                    text-align:center;
+                    padding:30px;
+                    "
+                >
+
+                    Unable to load sales data.
+
+                    <br><br>
+
+                    Make sure the backend is running.
+
+                </td>
+
+            </tr>
+
+        `;
+
+
+        document.getElementById(
+            "salesStatus"
+        ).textContent =
+            "API Error";
+
+    }
+
+}
+
+
+// ==========================================
+// UPDATE SALES STATISTICS
+// ==========================================
+
+function updateSalesStats(sales) {
+
+    const units = sales.map(
+        item => Number(item.units_sold)
+    );
+
+
+    // Total units
+
+    const totalUnits =
+        units.reduce(
+            (sum, value) =>
+                sum + value,
+            0
+        );
+
+
+    // Average daily sales
+
+    const averageSales =
+        totalUnits / units.length;
+
+
+    // Highest sales
+
+    const highest =
+        Math.max(...units);
+
+
+    const highestRecord =
+        sales.find(
+            item =>
+                Number(item.units_sold)
+                === highest
+        );
+
+
+    document.getElementById(
+        "totalUnits"
+    ).textContent =
+        totalUnits.toLocaleString();
+
+
+    document.getElementById(
+        "averageSales"
+    ).textContent =
+        averageSales.toFixed(1);
+
+
+    document.getElementById(
+        "highestSales"
+    ).textContent =
+        highest;
+
+
+    document.getElementById(
+        "highestSalesDate"
+    ).textContent =
+        highestRecord
+        ? highestRecord.date
+        : "-";
+
+}
+
+
+// ==========================================
+// DISPLAY SALES TABLE
+// ==========================================
+
+function displaySalesTable(sales) {
+
+    const tableBody =
+        document.getElementById(
+            "salesTableBody"
+        );
+
+
+    tableBody.innerHTML = "";
+
+
+    /*
+        Latest sales first
+    */
+
+    const reversedSales =
+        [...sales].reverse();
+
+
+    reversedSales.forEach(item => {
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                ${escapeHTML(item.date)}
+            </td>
+
+            <td>
+                <strong>
+                    ${escapeHTML(item.product)}
+                </strong>
+            </td>
+
+            <td>
+                ${escapeHTML(item.store)}
+            </td>
+
+            <td>
+                ${Number(
+                    item.units_sold
+                ).toLocaleString()}
+            </td>
+
+        `;
+
+
+        tableBody.appendChild(row);
+
+    });
+
+}
+
+
+// ==========================================
+// CREATE SALES CHART
+// ==========================================
+
+function createSalesChart(sales) {
+
+    const chart =
+        document.getElementById(
+            "salesChart"
+        );
+
+
+    chart.innerHTML = "";
+
+
+    const maxSales =
+        Math.max(
+            ...sales.map(
+                item =>
+                    Number(
+                        item.units_sold
+                    )
+            )
+        );
+
+
+    sales.forEach(item => {
+
+        const value =
+            Number(
+                item.units_sold
+            );
+
+
+        let height =
+            (value / maxSales) * 100;
+
+
+        /*
+            Minimum height so
+            small sales are visible.
+        */
+
+        height =
+            Math.max(
+                height,
+                8
+            );
+
+
+        const container =
+            document.createElement(
+                "div"
+            );
+
+
+        container.className =
+            "bar-container";
+
+
+        const bar =
+            document.createElement(
+                "div"
+            );
+
+
+        bar.className =
+            "bar";
+
+
+        bar.style.height =
+            `${height}%`;
+
+
+        bar.title =
+            `${item.date}: ${value} units`;
+
+
+        const label =
+            document.createElement(
+                "span"
+            );
+
+
+        /*
+            Show only day
+            on chart labels.
+        */
+
+        label.textContent =
+            item.date.slice(-2);
+
+
+        container.appendChild(
+            bar
+        );
+
+        container.appendChild(
+            label
+        );
+
+
+        chart.appendChild(
+            container
+        );
+
+    });
+
+}
+
+
+// ==========================================
+// HTML ESCAPE
+// ==========================================
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+// ==========================================
+// LOAD SALES WHEN PAGE OPENS
+// ==========================================
+
+loadSales();
+
+</script>
+
+</body>
+
+</html>

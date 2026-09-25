@@ -1,0 +1,19 @@
+RetailEdge SIH26179 - Fixes applied (24 Sep 2026)
+
+1. Dashboard predicted demand now receives and displays the live AI predicted_demand field.
+2. Dashboard AI recommendation now receives a real recommendation/action from backend.
+3. Multi-product API now uses live XGBoost forecast + inventory intelligence instead of stale precomputed recommendation rows.
+4. Products page fixed to use predicted_daily_demand instead of the missing recent_daily_demand field.
+5. Inventory/risk data now exposes consistent predicted_demand, recommendation and action fields.
+6. Context Intelligence now returns festival, weather, promotion, online trend and trend index.
+7. Explainable AI now returns product-specific reasoning and context signals.
+8. Dashboard alert action is clickable and routes to the relevant recommendation/order/risk page.
+9. Recommendation page can open a product-specific recommendation using ?product=PRODUCT_ID.
+10. Purchase-order workflow, Orders, Factory and Customer pages were kept connected to the existing APIs.
+
+Validation:
+- Python backend files compile successfully.
+- FastAPI endpoint smoke checks returned HTTP 200 for health, recommendation, inventory risk, forecast, multi-products, products and factory capacity.
+- Inline frontend JavaScript passed Node syntax checks.
+
+Note: The project still uses the existing FastAPI backend on port 8003 from this uploaded project.

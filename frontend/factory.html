@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>Factory Intelligence</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <!-- FACTORY ROLE GUARD -->
+    <script>
+        (function () {
+
+            const loggedIn =
+                localStorage.getItem("loggedIn");
+
+            const role =
+                localStorage.getItem("userRole");
+
+            if (
+                loggedIn !== "true" ||
+                role !== "factory"
+            ) {
+
+                window.location.href =
+                    "index.html";
+
+            }
+
+        })();
+    </script>
+
+</head>
+
+
+<body>
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            AI
+        </div>
+
+        <div>
+
+            <h2>
+                Supply AI
+            </h2>
+
+            <span>
+                Factory Intelligence
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- FACTORY ONLY NAVIGATION -->
+
+    <nav>
+
+        <a
+            class="active"
+            href="factory.html"
+        >
+            Factory Dashboard
+        </a>
+
+    </nav>
+
+
+    <!-- LOGOUT -->
+
+    <div class="sidebar-bottom">
+
+        <button
+            onclick="logout()"
+            class="logout-btn"
+        >
+            Logout
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<main class="main-content">
+
+
+    <!-- HEADER -->
+
+    <header class="topbar">
+
+        <div>
+
+            <h1>
+                Factory / Workshop Dashboard
+            </h1>
+
+            <p>
+                Purchase order → production planning
+                → production → dispatch.
+            </p>
+
+        </div>
+
+
+        <div class="user-section">
+
+            <div class="status-dot"></div>
+
+            Supply Chain Online
+
+        </div>
+
+    </header>
+
+
+    <!-- =================================================
+         FACTORY KPI
+    ================================================= -->
+
+    <section class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <p>
+                New Orders
+            </p>
+
+            <h2 id="newOrders">
+                --
+            </h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <p>
+                In Production
+            </p>
+
+            <h2 id="inProduction">
+                --
+            </h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <p>
+                Ready / Dispatch
+            </p>
+
+            <h2 id="readyOrders">
+                --
+            </h2>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =================================================
+         FACTORY ORDERS
+    ================================================= -->
+
+    <section class="content-card">
+
+        <h2>
+            Factory Orders
+        </h2>
+
+        <p>
+            Advance each order through the real
+            workflow using the Next Step button.
+        </p>
+
+        <div id="factoryOrders">
+            Loading...
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         FACTORY DATA
+    ================================================= -->
+
+    <section class="content-card">
+
+        <h2>
+            Capacity, Raw Materials & Production
+        </h2>
+
+        <div id="factoryData">
+            Loading...
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<!-- =====================================================
+     EXISTING APP LOGIC
+===================================================== -->
+
+<script src="app.js"></script>
+
+
+<!-- =====================================================
+     LOGOUT
+===================================================== -->
+
+<script>
+
+function logout() {
+
+    localStorage.removeItem(
+        "loggedIn"
+    );
+
+    localStorage.removeItem(
+        "userRole"
+    );
+
+    localStorage.removeItem(
+        "username"
+    );
+
+    window.location.href =
+        "index.html";
+
+}
+
+</script>
+
+
+</body>
+</html>

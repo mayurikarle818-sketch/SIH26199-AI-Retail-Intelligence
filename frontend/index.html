@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Retail Platform - Login</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #eef2ff, #f8faff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #14213d;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 470px;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 42px 42px 38px;
+            box-shadow:
+                0 20px 50px rgba(31, 41, 55, 0.12),
+                0 4px 15px rgba(31, 41, 55, 0.05);
+            border: 1px solid #edf0f7;
+        }
+
+        /* LOGO */
+
+        .brand {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-box {
+            width: 58px;
+            height: 58px;
+            margin: 0 auto 14px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+
+            border-radius: 16px;
+
+            font-size: 25px;
+            font-weight: 800;
+
+            box-shadow: 0 8px 20px rgba(99, 76, 220, 0.25);
+        }
+
+        .brand h1 {
+            font-size: 27px;
+            font-weight: 750;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        .brand p {
+            color: #7b8499;
+            font-size: 14px;
+        }
+
+        /* WELCOME */
+
+        .welcome {
+            margin-bottom: 28px;
+        }
+
+        .welcome h2 {
+            font-size: 28px;
+            margin-bottom: 7px;
+            color: #111827;
+        }
+
+        .welcome p {
+            color: #7b8499;
+            font-size: 14px;
+        }
+
+        /* FORM */
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 650;
+            margin-bottom: 8px;
+            color: #26334d;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 52px;
+
+            border: 1px solid #dfe4ef;
+            border-radius: 11px;
+
+            padding: 0 15px;
+
+            font-size: 14px;
+            color: #1f2937;
+            background: #ffffff;
+
+            outline: none;
+
+            transition: 0.2s ease;
+        }
+
+        .form-control:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.10);
+        }
+
+        .form-control::placeholder {
+            color: #a2a9b8;
+        }
+
+        select.form-control {
+            cursor: pointer;
+        }
+
+        /* PASSWORD */
+
+        .password-input {
+            padding-right: 48px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+
+            border: none;
+            background: transparent;
+
+            cursor: pointer;
+
+            font-size: 18px;
+            color: #7b8499;
+        }
+
+        .toggle-password:hover {
+            color: #4f46e5;
+        }
+
+        /* LOGIN BUTTON */
+
+        .login-btn {
+            width: 100%;
+            height: 53px;
+
+            border: none;
+            border-radius: 11px;
+
+            background: linear-gradient(
+                135deg,
+                #4f46e5,
+                #7c3aed
+            );
+
+            color: white;
+
+            font-size: 15px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            margin-top: 8px;
+
+            transition: 0.2s ease;
+
+            box-shadow:
+                0 8px 18px rgba(99, 76, 220, 0.20);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 12px 24px rgba(99, 76, 220, 0.28);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        /* ERROR */
+
+        .error-message {
+            display: none;
+
+            margin-top: 15px;
+            padding: 11px 13px;
+
+            border-radius: 9px;
+
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+
+            color: #be123c;
+
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        /* FOOTER */
+
+        .login-footer {
+            text-align: center;
+            margin-top: 28px;
+
+            color: #9aa2b1;
+            font-size: 12px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 520px) {
+
+            .login-wrapper {
+                padding: 15px;
+            }
+
+            .login-card {
+                padding: 32px 24px;
+                border-radius: 17px;
+            }
+
+            .brand h1 {
+                font-size: 24px;
+            }
+
+            .welcome h2 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-wrapper">
+
+        <div class="login-card">
+
+            <!-- BRAND -->
+
+            <div class="brand">
+
+                <div class="logo-box">
+                    AI
+                </div>
+
+                <h1>AI Retail Platform</h1>
+
+                <p>Smart Inventory. Better Decisions.</p>
+
+            </div>
+
+
+            <!-- WELCOME -->
+
+            <div class="welcome">
+
+                <h2>Welcome Back</h2>
+
+                <p>
+                    Sign in to your account to continue
+                </p>
+
+            </div>
+
+
+            <!-- LOGIN FORM -->
+
+            <form id="loginForm">
+
+                <!-- ROLE -->
+
+                <div class="form-group">
+
+                    <label for="role">
+                        Role
+                    </label>
+
+                    <select
+                        id="role"
+                        class="form-control"
+                        required
+                    >
+
+                        <option value="">
+                            Select your role
+                        </option>
+
+                        <option value="retailer">
+                            Retailer
+                        </option>
+
+                        <option value="factory">
+                            Factory
+                        </option>
+
+                        <option value="customer">
+                            Customer
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- USERNAME -->
+
+                <div class="form-group">
+
+                    <label for="username">
+                        ID / Username
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        class="form-control"
+                        placeholder="Enter your ID or username"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <input
+                            type="password"
+                            id="password"
+                            class="form-control password-input"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="toggle-password"
+                            id="togglePassword"
+                            aria-label="Show password"
+                        >
+                            👁
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- LOGIN BUTTON -->
+
+                <button
+                    type="submit"
+                    class="login-btn"
+                >
+                    Sign In
+                </button>
+
+
+                <!-- ERROR -->
+
+                <div
+                    id="errorMessage"
+                    class="error-message"
+                ></div>
+
+            </form>
+
+
+            <!-- FOOTER -->
+
+            <div class="login-footer">
+                AI Retail Intelligence Platform
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        /* ==========================================
+           PASSWORD SHOW / HIDE
+        ========================================== */
+
+        const passwordInput =
+            document.getElementById("password");
+
+        const togglePassword =
+            document.getElementById("togglePassword");
+
+
+        togglePassword.addEventListener(
+            "click",
+            function () {
+
+                if (
+                    passwordInput.type === "password"
+                ) {
+
+                    passwordInput.type = "text";
+
+                    togglePassword.textContent = "🙈";
+
+                }
+
+                else {
+
+                    passwordInput.type = "password";
+
+                    togglePassword.textContent = "👁";
+
+                }
+
+            }
+        );
+
+
+        /* ==========================================
+           LOGIN
+        ========================================== */
+
+        document
+            .getElementById("loginForm")
+            .addEventListener(
+                "submit",
+                function (event) {
+
+                    event.preventDefault();
+
+
+                    const role =
+                        document
+                            .getElementById("role")
+                            .value;
+
+                    const username =
+                        document
+                            .getElementById("username")
+                            .value
+                            .trim();
+
+                    const password =
+                        document
+                            .getElementById("password")
+                            .value;
+
+                    const error =
+                        document
+                            .getElementById("errorMessage");
+
+
+                    error.style.display = "none";
+
+
+                    /* CHECK ROLE */
+
+                    if (!role) {
+
+                        showError(
+                            "Please select your role."
+                        );
+
+                        return;
+
+                    }
+
+
+                    /* CHECK USERNAME */
+
+                    if (!username) {
+
+                        showError(
+                            "Please enter your ID / username."
+                        );
+
+                        return;
+
+                    }
+
+
+                    /* CHECK PASSWORD */
+
+                    if (!password) {
+
+                        showError(
+                            "Please enter your password."
+                        );
+
+                        return;
+
+                    }
+
+
+                    /*
+                       DEMO LOGIN
+
+                       For your MVP:
+                       demo / 1234
+                    */
+
+                    if (
+                        username !== "demo" ||
+                        password !== "1234"
+                    ) {
+
+                        showError(
+                            "Invalid ID or password. Use demo / 1234 for the MVP."
+                        );
+
+                        return;
+
+                    }
+
+
+                    /* SAVE LOGIN */
+
+                    localStorage.setItem(
+                        "loggedIn",
+                        "true"
+                    );
+
+                    localStorage.setItem(
+                        "userRole",
+                        role
+                    );
+
+                    localStorage.setItem(
+                        "username",
+                        username
+                    );
+
+
+                    /* ROLE BASED REDIRECT */
+
+                    if (role === "retailer") {
+
+                        window.location.href =
+                            "dashboard.html";
+
+                    }
+
+                    else if (role === "factory") {
+
+                        window.location.href =
+                            "factory.html";
+
+                    }
+
+                    else if (role === "customer") {
+
+                        window.location.href =
+                            "customer.html";
+
+                    }
+
+                }
+            );
+
+
+        /* ==========================================
+           ERROR FUNCTION
+        ========================================== */
+
+        function showError(message) {
+
+            const error =
+                document.getElementById(
+                    "errorMessage"
+                );
+
+            error.textContent = message;
+
+            error.style.display = "block";
+
+        }
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+dispatch_id,production_order_id,product_id,dispatch_date,dispatch_quantity,vehicle_id,source,destination,dispatch_status
+DIS001,PO001,PR001,2026-09-04,480,TR001,Pune,Mumbai,Dispatched
+DIS002,PO002,PR002,2026-09-05,295,TR002,Nashik,Pune,Dispatched
+DIS003,PO003,PR003,2026-09-07,680,TR003,Mumbai,Nagpur,Dispatched
+DIS004,PO004,PR004,2026-09-08,420,TR004,Pune,Satara,Delivered
+DIS005,PO005,PR005,2026-09-09,570,TR005,Kolhapur,Pune,Dispatched
+DIS006,PO006,PR006,2026-09-10,330,TR006,Nagpur,Amravati,Delivered
+DIS007,PO007,PR007,2026-09-11,0,TR007,Pune,Nashik,Pending
+DIS008,PO008,PR008,2026-09-11,390,TR008,Mumbai,Thane,Dispatched
+DIS009,PO009,PR009,2026-09-12,525,TR009,Solapur,Pune,Dispatched
+DIS010,PO010,PR010,2026-09-13,0,TR010,Aurangabad,Nashik,Pending

@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>Purchase Orders</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- RETAILER ROLE PROTECTION -->
+  <script>
+    (function () {
+      const loggedIn = localStorage.getItem("loggedIn");
+      const role = localStorage.getItem("userRole");
+
+      if (loggedIn !== "true" || role !== "retailer") {
+        window.location.href = "index.html";
+      }
+    })();
+  </script>
+</head>
+
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="logo">
+      <div class="logo-icon">AI</div>
+
+      <div>
+        <h2>Retail AI</h2>
+        <span>Supply Chain</span>
+      </div>
+    </div>
+
+    <nav>
+
+      <a href="dashboard.html">
+        Dashboard
+      </a>
+
+      <a href="products.html">
+        Products
+      </a>
+
+      <a href="sales.html">
+        Sales Analysis
+      </a>
+
+      <a href="prediction.html">
+        AI Demand Prediction
+      </a>
+
+      <a href="inventory-risk.html">
+        Inventory Risk
+      </a>
+
+      <a href="recommendations.html">
+        AI Recommendations
+      </a>
+
+      <a class="active" href="orders.html">
+        Orders
+      </a>
+
+    </nav>
+
+    <!-- LOGOUT -->
+    <div class="sidebar-bottom">
+      <button class="logout-btn" onclick="logout()">
+        Logout
+      </button>
+    </div>
+
+  </aside>
+
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <header class="topbar">
+
+      <div>
+        <h1>Purchase Orders</h1>
+
+        <p>
+          Track retailer purchase orders and order status.
+        </p>
+      </div>
+
+    </header>
+
+
+    <!-- ORDER HISTORY -->
+    <section class="content-card">
+
+      <h2>Order History</h2>
+
+      <p>
+        View previously created purchase orders and their current status.
+      </p>
+
+      <div id="orders">
+        Loading...
+      </div>
+
+    </section>
+
+
+    <!-- ORDER STATUS -->
+    <section class="content-card">
+
+      <h2>Order Status</h2>
+
+      <p>
+        Pending → Accepted → In Production → Ready → Dispatched → Delivered
+      </p>
+
+    </section>
+
+  </main>
+
+
+  <!-- LOGOUT -->
+  <script>
+
+    function logout() {
+
+      localStorage.removeItem("loggedIn");
+      localStorage.removeItem("userRole");
+      localStorage.removeItem("username");
+
+      window.location.href = "index.html";
+    }
+
+  </script>
+
+
+  <script src="app.js"></script>
+
+</body>
+</html>

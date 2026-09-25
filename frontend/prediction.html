@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Demand Prediction</title>
+
+    <!-- ==========================================
+         RETAILER-ONLY ACCESS
+    ========================================== -->
+    <script>
+    (function () {
+
+        const loggedIn = localStorage.getItem("loggedIn");
+        const role = localStorage.getItem("userRole");
+
+        if (loggedIn !== "true" || role !== "retailer") {
+            window.location.href = "index.html";
+        }
+
+    })();
+    </script>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0f1117;
+            color: #ffffff;
+        }
+
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 30px;
+        }
+
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+
+        .subtitle {
+            color: #9ca3af;
+            margin-bottom: 30px;
+        }
+
+
+        .banner {
+            background: #181c27;
+            border: 1px solid #2b3140;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+
+        .banner span {
+            color: #8b5cf6;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+
+        .banner h2 {
+            margin: 10px 0;
+        }
+
+
+        .banner p {
+            color: #aeb4c0;
+        }
+
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+
+        .card {
+            background: #181c27;
+            border: 1px solid #2b3140;
+            border-radius: 14px;
+            padding: 25px;
+        }
+
+
+        .card-title {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+
+        .card-value {
+            font-size: 30px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+
+        .card-small {
+            color: #8b93a3;
+            font-size: 13px;
+        }
+
+
+        .panel {
+            background: #181c27;
+            border: 1px solid #2b3140;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+
+        .panel-header p {
+            color: #9ca3af;
+        }
+
+
+        #predictionStatus {
+            padding: 8px 14px;
+            border-radius: 20px;
+            background: #263322;
+            color: #9ee37d;
+            font-size: 13px;
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+
+        th,
+        td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #2b3140;
+        }
+
+
+        th {
+            color: #9ca3af;
+            font-size: 13px;
+        }
+
+
+        td {
+            color: #e5e7eb;
+        }
+
+
+        .risk {
+            font-weight: bold;
+        }
+
+
+        .error {
+            background: #3b1717;
+            border: 1px solid #7f1d1d;
+            color: #fecaca;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+
+        #debugBox {
+            margin-top: 20px;
+            padding: 15px;
+            background: #111827;
+            border-radius: 10px;
+            color: #9ca3af;
+            font-size: 13px;
+        }
+
+
+        @media (max-width: 800px) {
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+    <h1>AI Demand Prediction</h1>
+
+
+    <div class="subtitle">
+        Forecast product demand using Machine Learning.
+    </div>
+
+
+    <!-- ==========================================
+         AI BANNER
+    ========================================== -->
+
+    <div class="banner">
+
+        <span>AI FORECAST</span>
+
+
+        <h2 id="forecastTitle">
+            Loading prediction...
+        </h2>
+
+
+        <p id="forecastDescription">
+            Connecting to AI prediction engine...
+        </p>
+
+    </div>
+
+
+    <!-- ==========================================
+         KPI CARDS
+    ========================================== -->
+
+    <div class="cards">
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Predicted Demand
+            </div>
+
+
+            <div
+                class="card-value"
+                id="predictedDemand"
+            >
+                -
+            </div>
+
+
+            <div class="card-small">
+                units / day
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Current Stock
+            </div>
+
+
+            <div
+                class="card-value"
+                id="currentStock"
+            >
+                -
+            </div>
+
+
+            <div class="card-small">
+                units
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Forecast Date
+            </div>
+
+
+            <div
+                class="card-value"
+                id="forecastDate"
+            >
+                -
+            </div>
+
+
+            <div class="card-small">
+                AI forecast
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ==========================================
+         FORECAST
+    ========================================== -->
+
+    <div class="panel">
+
+
+        <div class="panel-header">
+
+
+            <div>
+
+                <h2>Demand Forecast</h2>
+
+                <p>
+                    XGBoost 7-day demand prediction
+                </p>
+
+            </div>
+
+
+            <span id="predictionStatus">
+                Connecting...
+            </span>
+
+
+        </div>
+
+
+        <table>
+
+
+            <thead>
+
+                <tr>
+
+                    <th>Product</th>
+
+                    <th>Store</th>
+
+                    <th>Current Stock</th>
+
+                    <th>Predicted Demand</th>
+
+                    <th>Forecast Date</th>
+
+                    <th>Demand Level</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="predictionTableBody">
+
+                <tr>
+
+                    <td
+                        colspan="6"
+                        style="text-align:center;"
+                    >
+
+                        Connecting to AI prediction...
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+
+        </table>
+
+
+    </div>
+
+
+    <!-- ==========================================
+         AI INSIGHT
+    ========================================== -->
+
+    <div class="panel">
+
+
+        <h2>AI Prediction Insight</h2>
+
+
+        <p style="color:#9ca3af;">
+            Explainable AI recommendation
+        </p>
+
+
+        <div id="predictionInsight">
+            Connecting to AI engine...
+        </div>
+
+
+    </div>
+
+
+    <!-- ==========================================
+         DEBUG
+    ========================================== -->
+
+    <div id="debugBox">
+        AI engine initializing...
+    </div>
+
+
+</div>
+
+
+<script>
+
+// ==========================================
+// API
+// ==========================================
+
+const API_URL =
+    "http://127.0.0.1:8003/api/ai-insights?product=FOODS_3_090&store=CA_1";
+
+
+// ==========================================
+// DEBUG
+// ==========================================
+
+function setDebug(message) {
+
+    const box =
+        document.getElementById("debugBox");
+
+    if (box) {
+        box.textContent = message;
+    }
+
+}
+
+
+// ==========================================
+// HTML ESCAPE
+// ==========================================
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+// ==========================================
+// LOAD AI DATA
+// ==========================================
+
+async function loadAIData() {
+
+    setDebug(
+        "Step 1: JavaScript started..."
+    );
+
+
+    try {
+
+        console.log(
+            "AI PAGE STARTED"
+        );
+
+
+        setDebug(
+            "Step 2: Calling AI API..."
+        );
+
+
+        const response =
+            await fetch(API_URL);
+
+
+        setDebug(
+            "Step 3: API responded with HTTP " +
+            response.status
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "API returned HTTP " +
+                response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "AI DATA:",
+            data
+        );
+
+
+        setDebug(
+            "Step 4: AI data received successfully."
+        );
+
+
+        if (data.status !== "success") {
+
+            throw new Error(
+                "AI API status is not success"
+            );
+
+        }
+
+
+        // ==========================================
+        // BASIC DATA
+        // ==========================================
+
+        const inventory =
+            data.inventory || {};
+
+
+        const forecast =
+            data.forecast || [];
+
+
+        const product =
+            inventory.product ||
+            "FOODS_3_090";
+
+
+        const store =
+            inventory.store ||
+            "CA_1";
+
+
+        const model =
+            data.model ||
+            "XGBoost Regressor";
+
+
+        const mae =
+            Number(data.mae || 0);
+
+
+        // ==========================================
+        // PREDICTED DAILY DEMAND
+        // ==========================================
+
+        const predictedDemand =
+            Number(
+                inventory.predicted_daily_demand ??
+                inventory.predicted_demand ??
+                0
+            );
+
+
+        // ==========================================
+        // CURRENT STOCK
+        // ==========================================
+
+        const currentStock =
+            Number(
+                inventory.current_stock || 0
+            );
+
+
+        // ==========================================
+        // FORECAST DATE
+        // ==========================================
+
+        const forecastDate =
+            forecast.length > 0
+                ? forecast[0].date
+                : "--";
+
+
+        // ==========================================
+        // TOP BANNER
+        // ==========================================
+
+        document.getElementById(
+            "forecastTitle"
+        ).textContent =
+            product +
+            " — " +
+            model;
+
+
+        document.getElementById(
+            "forecastDescription"
+        ).textContent =
+            "7-day AI demand forecast | " +
+            "MAE: " +
+            mae.toFixed(2);
+
+
+        // ==========================================
+        // KPI
+        // ==========================================
+
+        document.getElementById(
+            "predictedDemand"
+        ).textContent =
+            predictedDemand.toFixed(1);
+
+
+        document.getElementById(
+            "currentStock"
+        ).textContent =
+            currentStock;
+
+
+        document.getElementById(
+            "forecastDate"
+        ).textContent =
+            forecastDate;
+
+
+        // ==========================================
+        // STATUS
+        // ==========================================
+
+        document.getElementById(
+            "predictionStatus"
+        ).textContent =
+            inventory.risk ||
+            "AI Ready";
+
+
+        // ==========================================
+        // FORECAST TABLE
+        // ==========================================
+
+        const table =
+            document.getElementById(
+                "predictionTableBody"
+            );
+
+
+        table.innerHTML = "";
+
+
+        if (forecast.length === 0) {
+
+            table.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="6"
+                        style="text-align:center;"
+                    >
+
+                        No forecast records available.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+
+        forecast.forEach(
+            function(row) {
+
+                const demand =
+                    Number(
+                        row.predicted_demand || 0
+                    );
+
+
+                let level =
+                    "Normal";
+
+
+                if (
+                    demand >= currentStock
+                ) {
+
+                    level =
+                        "High";
+
+                }
+                else if (
+                    demand >= predictedDemand
+                ) {
+
+                    level =
+                        "Elevated";
+
+                }
+
+
+                const tr =
+                    document.createElement("tr");
+
+
+                tr.innerHTML = `
+
+                    <td>
+                        ${escapeHTML(product)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(store)}
+                    </td>
+
+                    <td>
+                        ${currentStock}
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${demand.toFixed(1)}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${escapeHTML(row.date)}
+                    </td>
+
+                    <td>
+                        ${level}
+                    </td>
+
+                `;
+
+
+                table.appendChild(tr);
+
+            }
+        );
+
+
+        // ==========================================
+        // AI INSIGHT
+        // ==========================================
+
+        const stockCover =
+            Number(
+                inventory.stock_cover_days || 0
+            );
+
+
+        const leadTime =
+            Number(
+                inventory.lead_time_days || 0
+            );
+
+
+        const reorderPoint =
+            Number(
+                inventory.reorder_point || 0
+            );
+
+
+        const recommendedOrder =
+            Number(
+                inventory.recommended_order || 0
+            );
+
+
+        const risk =
+            inventory.risk ||
+            "Unknown";
+
+
+        const recommendation =
+            inventory.recommendation ||
+            "No recommendation available.";
+
+
+        const reason =
+            inventory.reason ||
+            "";
+
+
+        document.getElementById(
+            "predictionInsight"
+        ).innerHTML = `
+
+            <p>
+                <strong>AI Model:</strong>
+                ${escapeHTML(model)}
+            </p>
+
+
+            <p>
+                <strong>Predicted Demand:</strong>
+                ${predictedDemand.toFixed(1)}
+                units/day
+            </p>
+
+
+            <p>
+                <strong>Current Stock:</strong>
+                ${currentStock} units
+            </p>
+
+
+            <p>
+                <strong>Stock Cover:</strong>
+                ${stockCover.toFixed(1)} days
+            </p>
+
+
+            <p>
+                <strong>Lead Time:</strong>
+                ${leadTime} days
+            </p>
+
+
+            <p>
+                <strong>Reorder Point:</strong>
+                ${reorderPoint} units
+            </p>
+
+
+            <p>
+                <strong>Inventory Risk:</strong>
+
+                <span class="risk">
+                    ${escapeHTML(risk)}
+                </span>
+
+            </p>
+
+
+            <p>
+                <strong>Recommended Order:</strong>
+                ${recommendedOrder} units
+            </p>
+
+
+            <p>
+                <strong>AI Recommendation:</strong>
+                ${escapeHTML(recommendation)}
+            </p>
+
+
+            <p>
+                <strong>Reason:</strong>
+                ${escapeHTML(reason)}
+            </p>
+
+        `;
+
+
+        // ==========================================
+        // SUCCESS
+        // ==========================================
+
+        setDebug(
+            "SUCCESS: AI data loaded from XGBoost API."
+        );
+
+
+        console.log(
+            "AI DEMAND PAGE SUCCESS"
+        );
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "AI PAGE ERROR:",
+            error
+        );
+
+
+        document.getElementById(
+            "predictionStatus"
+        ).textContent =
+            "ERROR";
+
+
+        document.getElementById(
+            "predictionTableBody"
+        ).innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    style="
+                        text-align:center;
+                        color:#ff8a8a;
+                        padding:30px;
+                    "
+                >
+
+                    AI prediction failed.
+
+                    <br><br>
+
+                    ${escapeHTML(error.message)}
+
+                </td>
+
+            </tr>
+
+        `;
+
+
+        document.getElementById(
+            "predictionInsight"
+        ).innerHTML = `
+
+            <div class="error">
+
+                <strong>
+                    AI Prediction Error
+                </strong>
+
+                <br><br>
+
+                ${escapeHTML(error.message)}
+
+            </div>
+
+        `;
+
+
+        setDebug(
+            "ERROR: " +
+            error.message
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// START
+// ==========================================
+
+window.addEventListener(
+    "DOMContentLoaded",
+    loadAIData
+);
+
+</script>
+
+
+</body>
+</html>

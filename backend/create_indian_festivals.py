@@ -1,0 +1,77 @@
+import pandas as pd
+
+festivals = [
+    # 2011
+    ["2011-01-26", "Republic Day", "National", "High"],
+    ["2011-03-02", "Maha Shivratri", "Hindu", "High"],
+    ["2011-03-20", "Holi", "Hindu", "High"],
+    ["2011-04-04", "Gudi Padwa", "Hindu", "High"],
+    ["2011-08-31", "Ganesh Chaturthi", "Hindu", "High"],
+    ["2011-10-06", "Dussehra", "Hindu", "High"],
+    ["2011-10-26", "Diwali", "Hindu", "High"],
+    ["2011-12-25", "Christmas", "Christian", "High"],
+
+    # 2012
+    ["2012-01-26", "Republic Day", "National", "High"],
+    ["2012-02-20", "Maha Shivratri", "Hindu", "High"],
+    ["2012-03-08", "Holi", "Hindu", "High"],
+    ["2012-03-23", "Gudi Padwa", "Hindu", "High"],
+    ["2012-09-19", "Ganesh Chaturthi", "Hindu", "High"],
+    ["2012-10-24", "Dussehra", "Hindu", "High"],
+    ["2012-11-13", "Diwali", "Hindu", "High"],
+    ["2012-12-25", "Christmas", "Christian", "High"],
+
+    # 2013
+    ["2013-01-26", "Republic Day", "National", "High"],
+    ["2013-03-10", "Holi", "Hindu", "High"],
+    ["2013-04-11", "Gudi Padwa", "Hindu", "High"],
+    ["2013-09-09", "Ganesh Chaturthi", "Hindu", "High"],
+    ["2013-10-13", "Dussehra", "Hindu", "High"],
+    ["2013-11-03", "Diwali", "Hindu", "High"],
+    ["2013-12-25", "Christmas", "Christian", "High"],
+
+    # 2014
+    ["2014-01-26", "Republic Day", "National", "High"],
+    ["2014-03-17", "Holi", "Hindu", "High"],
+    ["2014-03-31", "Gudi Padwa", "Hindu", "High"],
+    ["2014-08-29", "Ganesh Chaturthi", "Hindu", "High"],
+    ["2014-10-03", "Dussehra", "Hindu", "High"],
+    ["2014-10-23", "Diwali", "Hindu", "High"],
+    ["2014-12-25", "Christmas", "Christian", "High"],
+
+    # 2015
+    ["2015-01-26", "Republic Day", "National", "High"],
+    ["2015-03-06", "Holi", "Hindu", "High"],
+    ["2015-03-21", "Gudi Padwa", "Hindu", "High"],
+    ["2015-09-17", "Ganesh Chaturthi", "Hindu", "High"],
+    ["2015-10-22", "Dussehra", "Hindu", "High"],
+    ["2015-11-11", "Diwali", "Hindu", "High"],
+    ["2015-12-25", "Christmas", "Christian", "High"],
+
+    # 2016
+    ["2016-01-26", "Republic Day", "National", "High"],
+    ["2016-03-24", "Holi", "Hindu", "High"],
+    ["2016-04-08", "Gudi Padwa", "Hindu", "High"],
+    ["2016-09-05", "Ganesh Chaturthi", "Hindu", "High"],
+    ["2016-10-11", "Dussehra", "Hindu", "High"],
+    ["2016-10-30", "Diwali", "Hindu", "High"],
+    ["2016-12-25", "Christmas", "Christian", "High"],
+]
+
+df = pd.DataFrame(
+    festivals,
+    columns=["date", "festival", "category", "importance"]
+)
+
+df["date"] = pd.to_datetime(df["date"])
+
+df.to_csv("data/indian_festivals_historical.csv", index=False)
+
+print("Historical Indian festival dataset created successfully!")
+print("\nDate Range:")
+print(df["date"].min().date(), "to", df["date"].max().date())
+
+print("\nTotal Festivals:", len(df))
+
+print("\nFestival Data:")
+print(df.to_string(index=False))

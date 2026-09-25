@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Inventory Risk</title>
+
+    <link rel="stylesheet" href="style.css">
+
+
+    <!-- ==========================================
+         RETAILER-ONLY ACCESS
+    ========================================== -->
+
+    <script>
+    (function () {
+
+        const loggedIn = localStorage.getItem("loggedIn");
+        const role = localStorage.getItem("userRole");
+
+        if (loggedIn !== "true" || role !== "retailer") {
+            window.location.href = "index.html";
+        }
+
+    })();
+    </script>
+
+
+    <style>
+
+        .risk-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+
+        .risk-card {
+            padding: 22px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+
+        .risk-card span {
+            font-size: 28px;
+        }
+
+
+        .risk-card h3 {
+            margin: 12px 0 6px;
+            font-size: 16px;
+        }
+
+
+        .risk-card strong {
+            display: block;
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+
+        .risk-card p {
+            margin: 0;
+            color: #999;
+            font-size: 13px;
+        }
+
+
+        .high-risk {
+            border-left: 4px solid #ef4444;
+        }
+
+
+        .medium-risk {
+            border-left: 4px solid #f59e0b;
+        }
+
+
+        .slow-risk {
+            border-left: 4px solid #f97316;
+        }
+
+
+        .risk-value-high {
+            color: #f87171;
+        }
+
+
+        .risk-value-normal {
+            color: #4ade80;
+        }
+
+
+        .risk-table-wrapper {
+            overflow-x: auto;
+        }
+
+
+        .risk-info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-top: 22px;
+        }
+
+
+        .info-box {
+            padding: 16px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+
+        .info-box span {
+            display: block;
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 7px;
+        }
+
+
+        .info-box strong {
+            font-size: 20px;
+        }
+
+
+        .ai-risk-box {
+            margin-top: 24px;
+            padding: 20px;
+            border-radius: 14px;
+            background: rgba(124, 92, 255, 0.10);
+            border: 1px solid rgba(124, 92, 255, 0.25);
+        }
+
+
+        .ai-risk-box h3 {
+            margin: 0 0 10px;
+        }
+
+
+        .ai-risk-box p {
+            margin: 0;
+            line-height: 1.6;
+            color: #c8c8d0;
+        }
+
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+        }
+
+
+        .error-message {
+            text-align: center;
+            padding: 30px;
+            color: #f87171;
+        }
+
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+
+        .badge.danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+        }
+
+
+        .badge.warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+        }
+
+
+        .badge.success {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+        }
+
+
+        .badge.normal {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+        }
+
+
+        .action-text {
+            font-weight: 600;
+        }
+
+
+        @media (max-width: 900px) {
+
+            .risk-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .risk-info {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .risk-info {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+
+        <div class="logo">
+
+            <div class="logo-icon">AI</div>
+
+            <div>
+
+                <h2>AI Retail</h2>
+
+                <span>Intelligence</span>
+
+            </div>
+
+        </div>
+
+
+        <nav>
+
+            <a href="dashboard.html" class="nav-link">
+                <span>Dashboard</span>
+            </a>
+
+
+            <a href="products.html" class="nav-link">
+                <span>Products</span>
+            </a>
+
+
+            <a href="sales.html" class="nav-link">
+                <span>Sales</span>
+            </a>
+
+
+            <a href="prediction.html" class="nav-link">
+                <span>Demand Prediction</span>
+            </a>
+
+
+            <a
+                href="inventory-risk.html"
+                class="nav-link active"
+            >
+                <span>Inventory Risk</span>
+            </a>
+
+
+            <a href="recommendations.html" class="nav-link">
+                <span>AI Recommendations</span>
+            </a>
+
+
+            <a href="orders.html" class="nav-link">
+                <span>Orders</span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <button
+                onclick="logout()"
+                class="logout-btn"
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="main-content">
+
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>Inventory Risk</h1>
+
+                <p>
+                    AI-powered inventory risk detection and stock recommendations.
+                </p>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================= RISK SUMMARY ================= -->
+
+        <section class="risk-cards">
+
+
+            <div class="risk-card high-risk">
+
+                <span>⚠️</span>
+
+                <h3>Stock-out Risk</h3>
+
+                <strong
+                    id="highRiskCount"
+                    class="risk-value-high"
+                >
+                    --
+                </strong>
+
+                <p>
+                    Products at high or critical risk
+                </p>
+
+            </div>
+
+
+            <div class="risk-card medium-risk">
+
+                <span>📦</span>
+
+                <h3>Overstock Risk</h3>
+
+                <strong id="overstockCount">
+                    --
+                </strong>
+
+                <p>
+                    Products with excess stock
+                </p>
+
+            </div>
+
+
+            <div class="risk-card slow-risk">
+
+                <span>🐢</span>
+
+                <h3>Slow Moving</h3>
+
+                <strong id="slowMovingCount">
+                    --
+                </strong>
+
+                <p>
+                    Products with low stock coverage
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- ================= RISK ANALYSIS ================= -->
+
+        <section class="panel">
+
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>Risk Analysis</h2>
+
+                    <p>
+                        Real-time AI inventory risk assessment
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-container risk-table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Product</th>
+
+                            <th>Store</th>
+
+                            <th>Current Stock</th>
+
+                            <th>Predicted Demand</th>
+
+                            <th>Reorder Point</th>
+
+                            <th>Risk</th>
+
+                            <th>Suggested Action</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="riskTableBody">
+
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="loading"
+                            >
+
+                                Loading AI risk analysis...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- ================= DETAILS ================= -->
+
+            <div class="risk-info">
+
+
+                <div class="info-box">
+
+                    <span>Available Stock</span>
+
+                    <strong id="availableStock">
+                        --
+                    </strong>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <span>Safety Stock</span>
+
+                    <strong id="safetyStock">
+                        --
+                    </strong>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <span>Lead Time</span>
+
+                    <strong id="leadTime">
+                        --
+                    </strong>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <span>Stock Cover</span>
+
+                    <strong id="stockCover">
+                        --
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ================= AI EXPLANATION ================= -->
+
+            <div class="ai-risk-box">
+
+                <h3>
+                    🤖 AI Risk Explanation
+                </h3>
+
+                <p id="aiRiskExplanation">
+
+                    Analysing inventory and demand data...
+
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+<script src="script.js"></script>
+
+
+<script>
+
+// ==========================================
+// LOGOUT
+// ==========================================
+
+function logout() {
+
+    localStorage.removeItem("loggedIn");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("username");
+
+    window.location.href = "index.html";
+
+}
+
+
+// ==========================================
+// INVENTORY RISK API
+// ==========================================
+
+const API_URL =
+    "http://127.0.0.1:8003/api/inventory-risk";
+
+
+// ==========================================
+// HTML ESCAPE
+// ==========================================
+
+function esc(value) {
+
+    return String(value ?? "")
+        .replace(/[&<>"']/g, function (m) {
+
+            return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                "\"": "&quot;",
+                "'": "&#039;"
+
+            }[m];
+
+        });
+
+}
+
+
+// ==========================================
+// LOAD INVENTORY RISK
+// ==========================================
+
+async function loadInventoryRisk() {
+
+    const body =
+        document.getElementById(
+            "riskTableBody"
+        );
+
+
+    try {
+
+        const res =
+            await fetch(API_URL);
+
+
+        if (!res.ok) {
+
+            throw new Error(
+                `API request failed: HTTP ${res.status}`
+            );
+
+        }
+
+
+        const data =
+            await res.json();
+
+
+        const rows =
+            data.inventory || [];
+
+
+        const summary =
+            data.summary || {};
+
+
+        // ==========================================
+        // SUMMARY COUNTS
+        // ==========================================
+
+        document.getElementById(
+            "highRiskCount"
+        ).textContent =
+            Number(summary.CRITICAL || 0) +
+            Number(summary.HIGH || 0);
+
+
+        document.getElementById(
+            "overstockCount"
+        ).textContent =
+            rows.filter(
+                r =>
+                    Number(
+                        r.stock_cover_days || 0
+                    ) > 14
+            ).length;
+
+
+        document.getElementById(
+            "slowMovingCount"
+        ).textContent =
+            rows.filter(
+                r =>
+                    Number(
+                        r.stock_cover_days || 0
+                    ) <
+                    Number(
+                        r.lead_time_days || 1
+                    )
+            ).length;
+
+
+        // ==========================================
+        // EMPTY DATA
+        // ==========================================
+
+        if (rows.length === 0) {
+
+            body.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="loading"
+                    >
+
+                        No inventory risk data available.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        // ==========================================
+        // RISK TABLE
+        // ==========================================
+
+        body.innerHTML =
+            rows.map(function (r) {
+
+
+                const risk =
+                    String(
+                        r.risk || "UNKNOWN"
+                    ).toUpperCase();
+
+
+                const recommendedOrder =
+                    Number(
+                        r.recommended_order || 0
+                    );
+
+
+                let action;
+
+
+                if (recommendedOrder > 0) {
+
+                    action = `
+
+                        <a
+                            class="primary-btn small-btn"
+                            href="recommendations.html"
+                        >
+                            View AI Order
+                        </a>
+
+                    `;
+
+                }
+                else {
+
+                    action = `
+
+                        <span class="status-ok">
+                            Monitor
+                        </span>
+
+                    `;
+
+                }
+
+
+                return `
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                ${esc(r.product)}
+                            </strong>
+                        </td>
+
+
+                        <td>
+                            ${esc(r.store)}
+                        </td>
+
+
+                        <td>
+                            ${r.current_stock} units
+                        </td>
+
+
+                        <td>
+                            ${Number(
+                                r.predicted_daily_demand || 0
+                            ).toFixed(1)}/day
+                        </td>
+
+
+                        <td>
+                            ${r.reorder_point}
+                        </td>
+
+
+                        <td>
+
+                            <span
+                                class="risk-badge ${risk.toLowerCase()}"
+                            >
+                                ${esc(risk)}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+                            ${action}
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }).join("");
+
+
+        // ==========================================
+        // DETAILS
+        // ==========================================
+
+        const first =
+            rows[0];
+
+
+        if (first) {
+
+            document.getElementById(
+                "availableStock"
+            ).textContent =
+                first.available_stock;
+
+
+            document.getElementById(
+                "safetyStock"
+            ).textContent =
+                first.safety_stock;
+
+
+            document.getElementById(
+                "leadTime"
+            ).textContent =
+                `${first.lead_time_days} days`;
+
+
+            document.getElementById(
+                "stockCover"
+            ).textContent =
+                `${Number(
+                    first.stock_cover_days || 0
+                ).toFixed(1)} days`;
+
+
+            document.getElementById(
+                "aiRiskExplanation"
+            ).textContent =
+                first.reason ||
+                "No additional explanation available.";
+
+        }
+
+    }
+
+
+    catch (e) {
+
+        console.error(
+            "Inventory Risk API Error:",
+            e
+        );
+
+
+        body.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="error-message"
+                >
+
+                    <strong>
+                        Unable to load inventory risk.
+                    </strong>
+
+                    <br><br>
+
+                    ${esc(e.message)}
+
+                    <br><br>
+
+                    Make sure the backend is running.
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+
+// ==========================================
+// START
+// ==========================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    loadInventoryRisk
+);
+
+</script>
+
+
+</body>
+
+</html>

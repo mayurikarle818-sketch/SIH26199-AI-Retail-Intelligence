@@ -1,0 +1,11 @@
+item_id,store_id,last_date,predicted_demand,current_stock,incoming_stock,available_stock,lead_time_days,safety_stock,reorder_point,stock_cover_days,risk,recommended_order,recommendation,mae,explanation
+FOODS_3_090,CA_1,2016-04-24,63,82,0,82,2,8,134,1.3,HIGH,52,Increase Stock,15.99,"Available stock is 82, below the reorder point of 134. Predicted demand is 63."
+FOODS_3_120,CA_1,2016-04-24,50,64,0,64,2,11,111,1.3,HIGH,47,Increase Stock,21.92,"Available stock is 64, below the reorder point of 111. Predicted demand is 50."
+FOODS_3_586,CA_1,2016-04-24,40,57,0,57,2,4,84,1.4,HIGH,27,Increase Stock,7.4,"Available stock is 57, below the reorder point of 84. Predicted demand is 40."
+FOODS_3_252,CA_1,2016-04-24,33,56,0,56,2,4,70,1.7,HIGH,14,Increase Stock,6.93,"Available stock is 56, below the reorder point of 70. Predicted demand is 33."
+FOODS_3_587,CA_1,2016-04-24,26,26,0,26,2,4,56,1.0,HIGH,30,Increase Stock,6.3,"Available stock is 26, below the reorder point of 56. Predicted demand is 26."
+FOODS_2_197,CA_1,2016-04-24,19,30,0,30,2,4,42,1.6,HIGH,12,Increase Stock,7.06,"Available stock is 30, below the reorder point of 42. Predicted demand is 19."
+FOODS_3_714,CA_1,2016-04-24,16,24,0,24,2,4,36,1.5,HIGH,12,Increase Stock,6.35,"Available stock is 24, below the reorder point of 36. Predicted demand is 16."
+FOODS_3_555,CA_1,2016-04-24,16,27,0,27,2,2,34,1.7,HIGH,7,Increase Stock,3.51,"Available stock is 27, below the reorder point of 34. Predicted demand is 16."
+FOODS_3_080,CA_1,2016-04-24,15,28,0,28,2,3,33,1.9,HIGH,5,Increase Stock,5.34,"Available stock is 28, below the reorder point of 33. Predicted demand is 15."
+FOODS_3_808,CA_1,2016-04-24,0,0,0,0,2,2,2,999.0,CRITICAL,2,Increase Stock,2.69,No available stock. Immediate replenishment required.
