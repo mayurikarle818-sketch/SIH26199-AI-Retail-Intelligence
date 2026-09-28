@@ -1,9 +1,86 @@
-SIH26199
-Student Innovation-Technology ideas in tertiary sectors like Hospitality, Financial Services, Entertainment and Retail
+# AI Retail & Supply Chain Intelligence Platform
 
-## Final demo flow
+### Smart Retail Decision-Support Platform using AI/ML
 
-**Customer demand → AI demand forecast → inventory risk → stock-out prediction → explainable reorder → digital purchase order → factory → capacity/raw-material analysis → production → dispatch → retailer → customer feedback/recommendation**
+**SIH 2026 – Problem Statement ID:** SIH26199  
+**Problem Statement:** Student Innovation – Technology ideas in tertiary sectors like Hospitality, Financial Services, Entertainment and Retail  
+**Sector:** Retail  
+**Category:** Software  
+**Project Type:** Web Application
+
+---
+
+## 📌 Project Overview
+
+The **AI Retail & Supply Chain Intelligence Platform** is a software-based web application designed to help retailers make data-driven inventory and replenishment decisions.
+
+The platform uses historical retail sales data and Machine Learning to:
+
+- Forecast future product demand
+- Identify inventory risks
+- Estimate stock-out risk
+- Calculate reorder points
+- Recommend reorder quantities
+- Generate digital Purchase Orders
+- Connect retailer orders with factory production workflows
+- Track production and dispatch status
+- Provide customer recommendations and feedback insights
+
+### Core Concept
+
+**Sense → Predict → Recommend → Act**
+
+The platform converts retail data into actionable business decisions instead of only displaying historical information.
+
+---
+
+# 🎯 Problem
+
+Retailers need to continuously decide:
+
+- How much inventory should be maintained?
+- When should a product be reordered?
+- Which products are at risk of stock-out?
+- How much should be ordered?
+- Can the downstream factory fulfill the requirement?
+- What happens after a retailer places an order?
+
+Traditional retail systems mainly provide historical sales and current inventory information. They may not directly connect demand forecasting, inventory risk, replenishment decisions and downstream production workflows.
+
+---
+
+# 💡 Proposed Solution
+
+Our platform creates an end-to-end retail intelligence workflow:
+
+```text
+Historical Sales Data
+        ↓
+Data Processing & Feature Engineering
+        ↓
+AI Demand Forecasting
+        ↓
+Inventory Risk Analysis
+        ↓
+Stock-out Risk Estimation
+        ↓
+Reorder Recommendation
+        ↓
+Digital Purchase Order
+        ↓
+Factory
+        ↓
+Production Planning
+        ↓
+Capacity & Raw Material Check
+        ↓
+Production
+        ↓
+Dispatch
+        ↓
+Retailer
+        ↓
+Customer Feedback & Recommendations
 
 The application is a beginner-friendly FastAPI + web frontend MVP. The existing working HTML/CSS/JS frontend is preserved to reduce breakage; the backend is upgraded with real-data AI services and the complete supply-chain workflow.
 
