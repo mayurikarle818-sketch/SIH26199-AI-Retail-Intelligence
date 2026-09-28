@@ -82,7 +82,7 @@ Retailer
         ↓
 Customer Feedback & Recommendations
 
-The application is a beginner-friendly FastAPI + web frontend MVP. The existing working HTML/CSS/JS frontend is preserved to reduce breakage; the backend is upgraded with real-data AI services and the complete supply-chain workflow.
+##The application is a beginner-friendly FastAPI + web frontend MVP. The existing working HTML/CSS/JS frontend is preserved to reduce breakage; the backend is upgraded with real-data AI services and the complete supply-chain workflow.
 
 ## What is implemented
 
