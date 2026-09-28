@@ -1,4 +1,5 @@
-# SIH26179 — RetailEdge AI Retail & Supply Chain Intelligence Final MVP
+SIH26199
+Student Innovation-Technology ideas in tertiary sectors like Hospitality, Financial Services, Entertainment and Retail
 
 ## Final demo flow
 
